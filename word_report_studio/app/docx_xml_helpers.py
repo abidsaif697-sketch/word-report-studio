@@ -252,6 +252,28 @@ def set_repeat_table_header(row):
         trPr.append(OxmlElement("w:tblHeader"))
 
 
+def add_page_edge_ribbon(header_paragraph, hex_color: str,
+                         width_pt: float = 16.0, page_h_pt: float = 842.0):
+    """Full-height color ribbon bleeding off the LEFT page edge on every
+    page. A VML rectangle anchored to the page inside the header repeats on
+    each page and sits behind the text — page geography like a designed
+    spread, while body text stays fully editable."""
+    from docx.oxml import parse_xml
+    color = hex_color.lstrip("#")
+    pict = parse_xml(
+        '<w:pict xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" '
+        'xmlns:v="urn:schemas-microsoft-com:vml" '
+        'xmlns:o="urn:schemas-microsoft-com:office:office">'
+        '<v:rect id="edge-ribbon" o:spid="_x0000_s2049" '
+        f'style="position:absolute;margin-left:0pt;margin-top:0pt;'
+        f'width:{width_pt}pt;height:{page_h_pt}pt;z-index:-251658240;'
+        'mso-position-horizontal:left;mso-position-horizontal-relative:page;'
+        'mso-position-vertical:top;mso-position-vertical-relative:page" '
+        f'fillcolor="#{color}" stroked="f"/></w:pict>')
+    run = header_paragraph.add_run()
+    run._r.append(pict)
+
+
 def set_row_cant_split(row):
     """Forbid Word from breaking a table row across pages — used on one-row
     visuals (callouts, KPI strips, section dividers) so they never leave an

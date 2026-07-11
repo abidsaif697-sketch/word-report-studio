@@ -264,6 +264,13 @@ class DocxRenderer:
         header = section.header
         hp = header.paragraphs[0]
         hp.text = ""
+        if template.page_ribbon:
+            # designed page geography: accent ribbon bleeding off the left
+            # edge of every page (anchored in the header, behind the text)
+            from .docx_xml_helpers import add_page_edge_ribbon
+            page_h_pt = 842 if template.page.size.upper() == "A4" else 792
+            add_page_edge_ribbon(hp, colors.accent, width_pt=14,
+                                 page_h_pt=page_h_pt)
         # brand logo leads the header when a branding pack is active
         brand = getattr(report, "branding", None)
         if brand is not None:
@@ -583,9 +590,39 @@ class DocxRenderer:
 
     def _render_section_divider(self, word: Document, section: Section,
                                  template: TemplateSpec, colors: ColorSpec, number: str):
-        """Chapter opener: full-width color band with a large chapter number,
-        the chapter title (kept on a real Heading 1 style so the TOC still
-        picks it up), and a thin accent line."""
+        """Chapter opener. divider_style "page" renders a full designed
+        poster page (ghost numeral, motif, display type); "band" keeps the
+        classic color strip. Both keep the title on a real Heading 1 so the
+        TOC still picks it up."""
+        if template.divider_style == "page":
+            try:
+                from . import cover_art
+                buf = cover_art.render_section_opener(
+                    number, section.title or "", colors,
+                    motif=template.opener_motif)
+                pic_p = word.add_paragraph()
+                pic_p.paragraph_format.space_before = Pt(0)
+                pic_p.paragraph_format.space_after = Pt(0)
+                pic_p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+                content_w = self._content_width_in(template)
+                page_h_in = 11.69 if template.page.size.upper() == "A4" else 11.0
+                content_h = page_h_in - template.page.margin_top_in \
+                    - template.page.margin_bottom_in - 0.25
+                pic_p.add_run().add_picture(
+                    buf, width=Inches(content_w),
+                    height=Inches(min(content_h, content_w * 2339 / 1654)))
+                # invisible Heading 1 anchor so the TOC lists the chapter
+                h = word.add_paragraph(style="Heading 1")
+                anchor_runs = runs_from_text(section.title or "")
+                self._write_runs(h, anchor_runs, template.fonts.heading_en,
+                                  template.fonts.heading_ar, 2, "FFFFFF")
+                h.paragraph_format.space_before = Pt(0)
+                h.paragraph_format.space_after = Pt(0)
+                h.paragraph_format.line_spacing = Pt(2)
+                self._request_page_break(word)
+                return
+            except Exception as exc:
+                _warn_visual_fallback("section opener", section.title or "", exc)
         table = word.add_table(rows=1, cols=2)
         table.autofit = False
         total = self._content_width_dxa(template, indent_dxa=0)

@@ -31,13 +31,36 @@
     "heading_ar": "Lusail",
     "body_ar": "Lusail"
   },
-  "font_sizes": {"h1": 36, "h2": 26, "h3": 19, "h4": 15, "body": 11, "caption": 9},
+  "font_sizes": {
+    "h1": 36,
+    "h2": 26,
+    "h3": 19,
+    "h4": 15,
+    "body": 11,
+    "caption": 9
+  },
   "line_spacing": 1.35,
   "section_dividers": true,
-  "cover": {"style": "image_hero", "art": "executive_light"},
-  "header_footer": {"show_page_numbers": true, "show_section_title": true},
+  "cover": {
+    "style": "image_hero",
+    "art": "executive_light"
+  },
+  "header_footer": {
+    "show_page_numbers": true,
+    "show_section_title": true
+  },
   "variants": [
-    {"variant_id": "default", "label": "Corporate Blue"},
-    {"variant_id": "premium_dark", "label": "Premium Dark", "art_override": "executive_dark"}
-  ]
+    {
+      "variant_id": "default",
+      "label": "Corporate Blue"
+    },
+    {
+      "variant_id": "premium_dark",
+      "label": "Premium Dark",
+      "art_override": "executive_dark"
+    }
+  ],
+  "divider_style": "page",
+  "opener_motif": "stars",
+  "page_ribbon": true
 }

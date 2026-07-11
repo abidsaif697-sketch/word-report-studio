@@ -139,6 +139,9 @@ class TemplateSpec:
     toc: bool = True
     line_spacing: float = 1.25          # body text line height
     section_dividers: bool = False      # chapter-opener band before each top section
+    divider_style: str = "band"         # "band" strip or "page" full-page poster opener
+    opener_motif: str = "stars"         # motif on "page" openers: stars|contours|grid
+    page_ribbon: bool = False           # full-bleed accent ribbon on every page edge
     variants: List[Variant] = field(default_factory=lambda: [Variant(variant_id="default", label="Default")])
 
     @classmethod
@@ -159,6 +162,9 @@ class TemplateSpec:
             toc=d.get("toc", True),
             line_spacing=d.get("line_spacing", 1.25),
             section_dividers=d.get("section_dividers", False),
+            divider_style=d.get("divider_style", "band"),
+            opener_motif=d.get("opener_motif", "stars"),
+            page_ribbon=d.get("page_ribbon", False),
             variants=[Variant.from_dict(v) for v in d.get("variants", [])] or
                       [Variant(variant_id="default", label="Default")],
         )

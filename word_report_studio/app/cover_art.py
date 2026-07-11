@@ -587,6 +587,63 @@ def _style_halftone(img, draw, meta, colors):
                     margin, fy + 130, accent, base_size=36)
 
 
+# ---------------------------------------------------------------------------
+# Full-page section opener — chapters open like poster spreads, not strips
+# ---------------------------------------------------------------------------
+
+def render_section_opener(number: str, title: str, colors,
+                          motif: str = "stars") -> io.BytesIO:
+    """A full designed chapter-opening page: deep color field, a giant ghost
+    numeral, a decorative motif, and the chapter title in display type."""
+    primary = _rgb(colors.primary)
+    accent = _rgb(colors.accent)
+    white = (255, 255, 255)
+
+    img = Image.new("RGB", (PAGE_W, PAGE_H), primary)
+    draw = ImageDraw.Draw(img)
+
+    if motif == "stars":
+        step = 260
+        for row in range(-1, PAGE_H // step + 2):
+            for col in range(-1, PAGE_W // step + 2):
+                cx = col * step + (step // 2 if row % 2 else 0)
+                cy = row * step
+                _star8(draw, cx, cy, 70, 28,
+                       _mix(primary, white, 0.05 if (row + col) % 2 else 0.03),
+                       rot=math.pi / 8)
+    elif motif == "contours":
+        fx, fy = PAGE_W + 220, PAGE_H + 180
+        for i in range(30):
+            r = 260 + i * 120
+            draw.ellipse([fx - r, fy - r * 0.9, fx + r, fy + r * 0.9],
+                         outline=_mix(primary, white, 0.07), width=4)
+    else:  # "grid"
+        for x in range(0, PAGE_W, 190):
+            draw.line([(x, 0), (x, PAGE_H)], fill=_mix(primary, white, 0.04), width=2)
+        for y in range(0, PAGE_H, 190):
+            draw.line([(0, y), (PAGE_W, y)], fill=_mix(primary, white, 0.04), width=2)
+
+    # giant ghost numeral bleeding off the right edge
+    f_ghost = _font("modern", 1150, bold=True)
+    draw.text((PAGE_W - f_ghost.getlength(number) + 210, 180), number,
+              font=f_ghost, fill=_mix(primary, white, 0.10))
+    # crisp accent numeral echo
+    f_num = _font("modern", 150, bold=True)
+    draw.text((150, 300), number, font=f_num, fill=_rgb(colors.accent))
+    draw.rectangle([150, 500, 470, 512], fill=accent)
+
+    # chapter title in display scale on the lower half
+    lines = _wrap_mixed(title or "", "modern", 132, PAGE_W - 340, bold=True)
+    y = _draw_mixed(draw, lines, 150, 1280, white, base_size=132)
+    # thin closing rule
+    draw.rectangle([150, y + 60, 620, y + 66], fill=_mix(primary, white, 0.35))
+
+    buf = io.BytesIO()
+    img.save(buf, format="PNG", optimize=True)
+    buf.seek(0)
+    return buf
+
+
 _STYLES = {"diagonal": _style_diagonal, "blocks": _style_blocks, "frame": _style_frame,
            "executive_light": _style_executive_light,
            "executive_dark": _style_executive_dark,

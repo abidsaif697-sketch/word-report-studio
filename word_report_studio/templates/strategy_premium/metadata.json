@@ -16,11 +16,34 @@
     "heading_ar": "Segoe UI",
     "body_ar": "Segoe UI"
   },
-  "font_sizes": {"h1": 30, "h2": 19, "h3": 15, "h4": 12.5, "body": 10.5, "caption": 9},
-  "cover": {"style": "image_hero", "art": "diagonal"},
+  "font_sizes": {
+    "h1": 30,
+    "h2": 19,
+    "h3": 15,
+    "h4": 12.5,
+    "body": 10.5,
+    "caption": 9
+  },
+  "cover": {
+    "style": "image_hero",
+    "art": "diagonal"
+  },
   "variants": [
-    {"variant_id": "default", "label": "Navy / Gold"},
-    {"variant_id": "graphite", "label": "Graphite / Teal",
-     "colors_override": {"primary": "1C2430", "secondary": "0E7490", "accent": "14B8A6"}}
-  ]
+    {
+      "variant_id": "default",
+      "label": "Navy / Gold"
+    },
+    {
+      "variant_id": "graphite",
+      "label": "Graphite / Teal",
+      "colors_override": {
+        "primary": "1C2430",
+        "secondary": "0E7490",
+        "accent": "14B8A6"
+      }
+    }
+  ],
+  "divider_style": "page",
+  "opener_motif": "grid",
+  "page_ribbon": true
 }

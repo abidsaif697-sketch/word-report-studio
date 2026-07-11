@@ -48,5 +48,8 @@
       "cover_style_override": "image_hero",
       "art_override": "geometric"
     }
-  ]
+  ],
+  "divider_style": "page",
+  "opener_motif": "stars",
+  "page_ribbon": true
 }
