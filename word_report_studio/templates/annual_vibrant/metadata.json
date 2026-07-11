@@ -1,0 +1,26 @@
+{
+  "id": "annual_vibrant",
+  "name": "Annual Vibrant",
+  "category": "corporate",
+  "description": "Modern annual-report look: saturated indigo cover with overlapping color geometry and an oversized ghost year, colorful data pages.",
+  "colors": {
+    "primary": "312E81",
+    "secondary": "0891B2",
+    "accent": "F59E0B",
+    "text": "1F2937",
+    "muted": "6B7280"
+  },
+  "fonts": {
+    "heading_en": "Segoe UI Semibold",
+    "body_en": "Segoe UI",
+    "heading_ar": "Segoe UI",
+    "body_ar": "Segoe UI"
+  },
+  "font_sizes": {"h1": 30, "h2": 20, "h3": 15, "h4": 13, "body": 11, "caption": 9},
+  "cover": {"style": "image_hero", "art": "blocks"},
+  "variants": [
+    {"variant_id": "default", "label": "Indigo / Amber"},
+    {"variant_id": "emerald", "label": "Emerald / Coral",
+     "colors_override": {"primary": "065F46", "secondary": "0D9488", "accent": "F97316"}}
+  ]
+}

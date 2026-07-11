@@ -1,0 +1,19 @@
+{
+  "id": "academic_research",
+  "name": "Academic / Research",
+  "category": "academic",
+  "description": "TOC-heavy, citation-friendly layout for research and technical reports.",
+  "supports_lang": ["en", "ar", "bilingual"],
+  "page": { "size": "A4", "margin_top_in": 1.2, "margin_bottom_in": 1.2, "margin_left_in": 1.2, "margin_right_in": 1.2, "mirror_margins": true },
+  "colors": { "primary": "3B2E7E", "secondary": "5B4B9E", "accent": "A63A3A", "text": "222222", "muted": "6E6E6E", "background": "FFFFFF" },
+  "fonts": { "heading_en": "Georgia", "body_en": "Georgia", "heading_ar": "Traditional Arabic", "body_ar": "Arial" },
+  "font_sizes": { "h1": 26, "h2": 18, "h3": 14, "h4": 12, "body": 11, "caption": 9 },
+  "cover": { "style": "full_bleed_footer", "show_confidentiality": false },
+  "header_footer": { "show_page_numbers": true, "show_section_title": true, "footer_text": "" },
+  "table_style": "Light List Accent 1",
+  "toc": true,
+  "variants": [
+    { "variant_id": "default", "label": "Deep Purple" },
+    { "variant_id": "slate", "label": "Slate", "colors_override": { "primary": "334155", "secondary": "475569", "accent": "0EA5E9" } }
+  ]
+}

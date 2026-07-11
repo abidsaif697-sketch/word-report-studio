@@ -1,0 +1,29 @@
+# Word Report Studio - offline dependencies
+# Install once (offline machine can use a local pip mirror / wheel cache):
+#   pip install -r requirements.txt --break-system-packages   (Linux w/ externally-managed Python)
+#   pip install -r requirements.txt                            (Windows / macOS / venv)
+
+python-docx>=1.1.0
+
+# Poster-quality generated report covers (fully offline)
+Pillow>=10.0.0
+
+# Charts, timelines, process diagrams, and auto-visualized tables
+# (chart_engine.py). Renders to in-memory PNG — no network, no temp files.
+matplotlib>=3.7.0
+
+# Correct Arabic letter joining + right-to-left ordering inside chart labels
+# (matplotlib does not do bidi/shaping itself). Pure-Python, fully offline.
+arabic-reshaper>=3.0.0
+python-bidi>=0.4.2
+
+# Optional: enables real first-page thumbnail images in the comparison
+# sheet / GUI gallery. Without it the app still works, just with color-swatch
+# cards instead of true page thumbnails.
+PyMuPDF>=1.23.0
+
+# Not a pip package: PDF export (DOCX -> PDF) and thumbnailing both rely on
+# LibreOffice being installed locally (free, offline installer):
+#   https://www.libreoffice.org/download/
+# The GUI/CLI detect it automatically and skip PDF export gracefully if it
+# is missing -- DOCX generation always works without it.

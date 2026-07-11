@@ -1,0 +1,19 @@
+{
+  "id": "consulting_analytical",
+  "name": "Consulting / Analytical",
+  "category": "consulting",
+  "description": "Structured, chart-and-callout-heavy layout for analytical and strategy reports.",
+  "supports_lang": ["en", "ar", "bilingual"],
+  "page": { "size": "A4", "margin_top_in": 0.9, "margin_bottom_in": 0.9, "margin_left_in": 0.9, "margin_right_in": 0.9, "mirror_margins": true },
+  "colors": { "primary": "111827", "secondary": "2563EB", "accent": "F59E0B", "text": "1F2933", "muted": "6B7280", "background": "FFFFFF" },
+  "fonts": { "heading_en": "Calibri", "body_en": "Calibri", "heading_ar": "Traditional Arabic", "body_ar": "Arial" },
+  "font_sizes": { "h1": 27, "h2": 19, "h3": 15, "h4": 12, "body": 10.5, "caption": 9 },
+  "cover": { "style": "side_bar", "show_confidentiality": true },
+  "header_footer": { "show_page_numbers": true, "show_section_title": true, "footer_text": "" },
+  "table_style": "Light Grid Accent 1",
+  "toc": true,
+  "variants": [
+    { "variant_id": "default", "label": "Blue / Structured" },
+    { "variant_id": "crimson", "label": "Crimson Accent", "colors_override": { "secondary": "9F1D35", "accent": "F2A900" } }
+  ]
+}

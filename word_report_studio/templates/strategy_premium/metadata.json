@@ -1,0 +1,26 @@
+{
+  "id": "strategy_premium",
+  "name": "Strategy Premium",
+  "category": "consulting",
+  "description": "Top-tier strategy-consulting look: deep navy sliced cover, gold seam, restrained typography, dense analytical pages.",
+  "colors": {
+    "primary": "0A1F44",
+    "secondary": "2A6F97",
+    "accent": "E0A458",
+    "text": "1F2937",
+    "muted": "6B7280"
+  },
+  "fonts": {
+    "heading_en": "Segoe UI Semibold",
+    "body_en": "Segoe UI",
+    "heading_ar": "Segoe UI",
+    "body_ar": "Segoe UI"
+  },
+  "font_sizes": {"h1": 30, "h2": 19, "h3": 15, "h4": 12.5, "body": 10.5, "caption": 9},
+  "cover": {"style": "image_hero", "art": "diagonal"},
+  "variants": [
+    {"variant_id": "default", "label": "Navy / Gold"},
+    {"variant_id": "graphite", "label": "Graphite / Teal",
+     "colors_override": {"primary": "1C2430", "secondary": "0E7490", "accent": "14B8A6"}}
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "meta": {
+    "title": "Annual Report / التقرير السنوي",
+    "subtitle": "Fiscal Year 2025",
+    "organization": "Acme Holdings",
+    "author": "Strategy Office",
+    "date": "2026-07-09",
+    "confidentiality": "Confidential / سري",
+    "lang_mode": "bilingual"
+  },
+  "include_cover": true,
+  "include_toc": true,
+  "sections": [
+    {
+      "title": "Executive Summary",
+      "blocks": [
+        {"type": "paragraph", "text": "Revenue grew 12% year over year. نما الإيرادات بنسبة 12% على أساس سنوي."},
+        {"type": "list", "ordered": false, "items": [
+          "Revenue grew 12% / نمو الإيرادات بنسبة 12%",
+          "Customer retention improved to 94% / تحسن الاحتفاظ بالعملاء إلى 94%"
+        ]},
+        {"type": "callout", "tone": "warning", "title": "Risk Note / ملاحظة",
+         "text": "Supply chain risk remains elevated. لا تزال مخاطر سلسلة التوريد مرتفعة."}
+      ],
+      "subsections": [
+        {
+          "title": "Revenue by Region",
+          "blocks": [
+            {"type": "table", "header_row": true, "caption": "FY2024 vs FY2025",
+             "rows": [
+               ["Region / المنطقة", "FY2024", "FY2025"],
+               ["Gulf / الخليج", "42.1M", "51.3M"],
+               ["Levant / بلاد الشام", "18.4M", "19.9M"]
+             ]}
+          ]
+        }
+      ]
+    }
+  ],
+  "appendices": [
+    {
+      "title": "Appendix A: Methodology",
+      "blocks": [
+        {"type": "paragraph", "text": "Figures are drawn from audited financial statements."}
+      ]
+    }
+  ]
+}

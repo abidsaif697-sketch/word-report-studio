@@ -1,0 +1,16 @@
+# generated outputs (regenerate anytime; never version binary artifacts)
+word_report_studio/output/
+word_report_studio/output_*/
+word_report_studio/**/thumbnails/
+word_report_studio/**/_photo_crops/
+word_report_studio/**/_extracted_images_*/
+
+# python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+
+# OS noise
+Thumbs.db
+Desktop.ini

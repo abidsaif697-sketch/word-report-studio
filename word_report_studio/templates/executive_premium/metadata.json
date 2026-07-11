@@ -1,0 +1,43 @@
+{
+  "id": "executive_premium",
+  "name": "Executive Premium",
+  "category": "consulting",
+  "description": "Flagship design system: Deep Navy / Royal Blue / Executive Gold, Lusail bilingual typography, chapter dividers, premium consulting tables and charts. McKinsey-meets-Doha.",
+  "page": {
+    "size": "A4",
+    "margin_top_in": 0.984,
+    "margin_bottom_in": 0.787,
+    "margin_left_in": 0.866,
+    "margin_right_in": 0.866
+  },
+  "colors": {
+    "primary": "0F2D52",
+    "secondary": "1F5FAE",
+    "accent": "C9A227",
+    "text": "1D1D1F",
+    "muted": "8D96A3",
+    "background": "F8F9FB",
+    "success": "2E8B57",
+    "warning": "E69A00",
+    "error": "B3261E",
+    "info": "2F80ED",
+    "surface": "FFFFFF",
+    "border": "D9DEE5",
+    "divider": "ECEFF3"
+  },
+  "fonts": {
+    "heading_en": "Lusail",
+    "body_en": "Lusail",
+    "heading_ar": "Lusail",
+    "body_ar": "Lusail"
+  },
+  "font_sizes": {"h1": 36, "h2": 26, "h3": 19, "h4": 15, "body": 11, "caption": 9},
+  "line_spacing": 1.35,
+  "section_dividers": true,
+  "cover": {"style": "image_hero", "art": "executive_light"},
+  "header_footer": {"show_page_numbers": true, "show_section_title": true},
+  "variants": [
+    {"variant_id": "default", "label": "Corporate Blue"},
+    {"variant_id": "premium_dark", "label": "Premium Dark", "art_override": "executive_dark"}
+  ]
+}

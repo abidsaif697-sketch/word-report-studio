@@ -1,0 +1,4 @@
+information security awareness program status
+the program covers three departments. IT department completed 92 percent of training in 2024 and 97 percent in 2025. HR department completed 78 percent in 2024 and 88 percent in 2025. Finance completed 81 percent in 2024 and 90 percent in 2025.
+document history version 0.1 drafted 14-03-2024 by ISM team, version 1.0 reviewed 08-05-2024 by ISM team, version 2.0 approved 01-04-2025 by CISO
+important: annual renewal of awareness certificates is due in Q3 and departments must schedule sessions early.
