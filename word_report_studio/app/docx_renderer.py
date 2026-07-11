@@ -264,6 +264,17 @@ class DocxRenderer:
         header = section.header
         hp = header.paragraphs[0]
         hp.text = ""
+        # brand logo leads the header when a branding pack is active
+        brand = getattr(report, "branding", None)
+        if brand is not None:
+            from .branding import logo_exists
+            if logo_exists(brand):
+                try:
+                    logo_run = hp.add_run()
+                    logo_run.add_picture(brand.logo_path, height=Inches(0.28))
+                    hp.add_run("   ")
+                except Exception as exc:
+                    _warn_visual_fallback("header logo", brand.logo_path, exc)
         title_runs = runs_from_text(report.meta.title or "")
         self._write_runs(hp, title_runs, template.fonts.body_en, template.fonts.body_ar,
                           template.font_sizes.caption, colors.muted)

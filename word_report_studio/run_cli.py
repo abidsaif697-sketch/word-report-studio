@@ -71,6 +71,8 @@ def main():
     ap.add_argument("--design-review", action="store_true",
                      help="After PDF export, have the local vision model "
                           "LOOK at each page and report visual problems")
+    ap.add_argument("--no-branding", action="store_true",
+                     help="Ignore branding.json for this run")
     args = ap.parse_args()
 
     if args.input.lower().endswith(".docx"):
@@ -180,9 +182,20 @@ def main():
             print("  --ai on was requested but no local model is reachable; "
                   "continuing with the rule-based formatter.")
 
+    from app.branding import load_brand, apply_to_template
+    brand = None if args.no_branding else load_brand()
+    if brand is not None and brand.enabled:
+        print(f"Branding active: {brand.organization or 'unnamed brand'} "
+              f"(colors {brand.primary or '-'}/{brand.secondary or '-'}/"
+              f"{brand.accent or '-'})")
+        if brand.organization and not meta.organization:
+            meta.organization = brand.organization
+
     parser = ContentParser()
     report = parser.parse_auto(content, meta=meta,
                                auto_visuals=not args.no_auto_visuals)
+    if brand is not None and brand.enabled:
+        report.branding = brand
     if forced_lang is not None:
         report.meta.lang_mode = forced_lang
     report.include_cover = not args.no_cover
@@ -218,6 +231,10 @@ def main():
         brain_analysis=brain_analysis,
     )
     print(f"[2/4] Selected {len(options)} layout option(s): " + ", ".join(o.label for o in options))
+
+    if brand is not None and brand.enabled:
+        for opt in options:
+            opt.template = apply_to_template(brand, opt.template)
 
     os.makedirs(args.output_dir, exist_ok=True)
     renderer = DocxRenderer()

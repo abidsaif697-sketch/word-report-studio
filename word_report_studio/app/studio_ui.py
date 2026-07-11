@@ -213,6 +213,34 @@ class StudioApp(tk.Tk):
         ttk.Spinbox(row, from_=1, to=8, textvariable=self.num_options_var,
                     width=4).pack(side="left", padx=6)
 
+        br = ttk.Labelframe(side, text="MY BRAND", style="Side.TLabelframe", padding=8)
+        br.pack(fill="x", pady=(10, 0))
+        from app.branding import load_brand
+        existing = load_brand()
+        self.brand_enabled_var = tk.BooleanVar(value=bool(existing and existing.enabled))
+        self.brand_logo_var = tk.StringVar(value=(existing.logo_path if existing else ""))
+        self.brand_primary_var = tk.StringVar(value=(existing.primary if existing else ""))
+        self.brand_secondary_var = tk.StringVar(value=(existing.secondary if existing else ""))
+        self.brand_accent_var = tk.StringVar(value=(existing.accent if existing else ""))
+        ttk.Checkbutton(br, text="Apply my brand to all designs",
+                        variable=self.brand_enabled_var,
+                        command=self._save_branding).pack(anchor="w")
+        row = ttk.Frame(br, style="Panel.TFrame")
+        row.pack(fill="x", pady=(4, 0))
+        self.brand_logo_btn = ttk.Button(
+            row, style="Tool.TButton", command=self._pick_logo,
+            text=("Logo ✓" if (existing and existing.logo_path) else "Logo…"))
+        self.brand_logo_btn.pack(side="left")
+        for lbl, var in (("P", self.brand_primary_var),
+                         ("S", self.brand_secondary_var),
+                         ("A", self.brand_accent_var)):
+            ttk.Label(row, text=" " + lbl, style="PanelLbl.TLabel").pack(side="left")
+            e = ttk.Entry(row, textvariable=var, width=7)
+            e.pack(side="left")
+            e.bind("<FocusOut>", lambda _e: self._save_branding())
+        ttk.Label(br, text="P/S/A = primary, secondary, accent hex colors",
+                  style="Muted.TLabel").pack(anchor="w")
+
         out = ttk.Labelframe(side, text="OUTPUT FOLDER", style="Side.TLabelframe", padding=8)
         out.pack(fill="x", pady=(10, 0))
         self.output_dir_var = tk.StringVar(value=DEFAULT_OUTPUT_DIR)
@@ -408,6 +436,31 @@ class StudioApp(tk.Tk):
         if path:
             self.output_dir_var.set(path)
 
+    def _pick_logo(self):
+        path = filedialog.askopenfilename(
+            title="Choose your logo image",
+            filetypes=[("Images", "*.png *.jpg *.jpeg *.bmp"), ("All files", "*.*")])
+        if path:
+            self.brand_logo_var.set(path)
+            self.brand_logo_btn.configure(text="Logo ✓")
+            self._save_branding()
+
+    def _save_branding(self):
+        from app.branding import Brand, save_brand, load_brand
+        prev = load_brand() or Brand()
+        brand = Brand(
+            enabled=self.brand_enabled_var.get(),
+            organization=self.org_var.get() or prev.organization,
+            logo_path=self.brand_logo_var.get(),
+            primary=self.brand_primary_var.get(),
+            secondary=self.brand_secondary_var.get(),
+            accent=self.brand_accent_var.get(),
+            heading_font=prev.heading_font, body_font=prev.body_font,
+            heading_font_ar=prev.heading_font_ar, body_font_ar=prev.body_font_ar)
+        save_brand(brand)
+        self.log("Brand saved" + (" — active on every design."
+                                  if brand.enabled else " (disabled)."))
+
     # ------------------------------------------------------------- generation
     def _busy(self, on: bool):
         def _do():
@@ -455,9 +508,19 @@ class StudioApp(tk.Tk):
                     else:
                         self.log(f"Local AI skipped: {llm.last_error}")
 
+            from app.branding import load_brand, apply_to_template
+            brand = load_brand()
+            brand_active = bool(brand and brand.enabled)
+            if brand_active:
+                self.log(f"Branding active: {brand.organization or 'my brand'}")
+                if brand.organization and not meta.organization:
+                    meta.organization = brand.organization
+
             self.log("Parsing and auto-designing...")
             parser = ContentParser()
             report = parser.parse_auto(content, meta=meta)
+            if brand_active:
+                report.branding = brand
             if forced_lang is not None:
                 report.meta.lang_mode = forced_lang
             report.include_cover = self.include_cover_var.get()
@@ -474,6 +537,9 @@ class StudioApp(tk.Tk):
             options = self.layout_engine.generate_options(
                 report, max_options=self.num_options_var.get(),
                 template_ids=selected_ids, brain_analysis=analysis)
+            if brand_active:
+                for opt in options:
+                    opt.template = apply_to_template(brand, opt.template)
             out_dir = self.output_dir_var.get() or DEFAULT_OUTPUT_DIR
             os.makedirs(out_dir, exist_ok=True)
             results = self.renderer.render_batch(report, options, output_dir=out_dir)
