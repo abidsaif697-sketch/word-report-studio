@@ -55,8 +55,10 @@ class StudioApp(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Word Report Studio")
-        self.geometry("1380x860")
-        self.minsize(1150, 720)
+        # never open larger than the actual screen
+        sw, sh = self.winfo_screenwidth(), self.winfo_screenheight()
+        self.geometry(f"{min(1380, sw - 60)}x{min(860, sh - 90)}+20+20")
+        self.minsize(980, 600)
         self.configure(bg=BG)
         self._style()
 
@@ -164,8 +166,31 @@ class StudioApp(tk.Tk):
 
     # ---------------------------------------------------------------- sidebar
     def _build_sidebar(self, parent):
-        side = ttk.Frame(parent, style="Panel.TFrame", padding=12)
-        side.pack(side="left", fill="y")
+        # settings scroll; the Generate button stays pinned and always visible
+        container = ttk.Frame(parent, style="Panel.TFrame")
+        container.pack(side="left", fill="y")
+
+        action = ttk.Frame(container, style="Panel.TFrame", padding=(12, 8))
+        action.pack(side="bottom", fill="x")
+
+        canvas = tk.Canvas(container, highlightthickness=0, bg=PANEL, bd=0)
+        vsb = ttk.Scrollbar(container, orient="vertical", command=canvas.yview)
+        canvas.configure(yscrollcommand=vsb.set)
+        vsb.pack(side="right", fill="y")
+        canvas.pack(side="left", fill="both", expand=True)
+
+        side = ttk.Frame(canvas, style="Panel.TFrame", padding=(12, 12, 6, 12))
+        canvas.create_window((0, 0), window=side, anchor="nw")
+        side.bind("<Configure>",
+                  lambda _e: canvas.configure(scrollregion=canvas.bbox("all")))
+
+        def _wheel(e):
+            canvas.yview_scroll(int(-e.delta / 120), "units")
+        canvas.bind("<Enter>", lambda _e: canvas.bind_all("<MouseWheel>", _wheel))
+        canvas.bind("<Leave>", lambda _e: canvas.unbind_all("<MouseWheel>"))
+        self._sidebar_canvas = canvas
+        self._sidebar_inner = side
+        self._sidebar_action = action
 
         doc = ttk.Labelframe(side, text="DOCUMENT", style="Side.TLabelframe", padding=8)
         doc.pack(fill="x")
@@ -249,11 +274,16 @@ class StudioApp(tk.Tk):
         ttk.Entry(row, textvariable=self.output_dir_var).pack(side="left", fill="x", expand=True)
         ttk.Button(row, text="…", width=3, command=self._browse_output).pack(side="left", padx=(4, 0))
 
-        self.generate_btn = ttk.Button(side, text="⚡  Generate & Preview",
+        self.generate_btn = ttk.Button(self._sidebar_action,
+                                       text="⚡  Generate & Preview",
                                        style="Accent.TButton", command=self._on_generate)
-        self.generate_btn.pack(fill="x", pady=(16, 4))
-        self.progress = ttk.Progressbar(side, mode="indeterminate")
+        self.generate_btn.pack(fill="x", pady=(0, 4))
+        self.progress = ttk.Progressbar(self._sidebar_action, mode="indeterminate")
         self.progress.pack(fill="x")
+
+        # size the canvas to the settings' natural width so nothing is clipped
+        side.update_idletasks()
+        self._sidebar_canvas.configure(width=side.winfo_reqwidth())
 
     # ------------------------------------------------------------ content tab
     def _build_content_tab(self):
@@ -378,7 +408,7 @@ class StudioApp(tk.Tk):
     def _build_log(self):
         frame = ttk.Frame(self, style="BG.TFrame")
         frame.pack(fill="x", padx=12, pady=(0, 8))
-        self.log_text = tk.Text(frame, height=6, wrap="word", state="disabled",
+        self.log_text = tk.Text(frame, height=4, wrap="word", state="disabled",
                                 relief="flat", background="#0E1B2C",
                                 foreground="#B9CCE0", font=("Consolas", 9),
                                 padx=8, pady=4)
