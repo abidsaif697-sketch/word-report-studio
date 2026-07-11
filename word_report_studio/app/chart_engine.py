@@ -187,6 +187,18 @@ def render_chart(chart_type: str, categories: Sequence[str],
         return _render_pie(cats, series, title, colors, palette,
                            donut=(chart_type == "donut"))
 
+    if chart_type in ("pictogram", "progress", "funnel", "versus"):
+        _set_font_stack(font_family, needs_arabic)
+        values = list(series[0][1]) if series else []
+        raw_cats = list(categories)
+        if chart_type == "pictogram":
+            return _render_pictogram(raw_cats, values, title, colors, palette)
+        if chart_type == "progress":
+            return _render_progress(raw_cats, values, title, colors, palette)
+        if chart_type == "funnel":
+            return _render_funnel(raw_cats, values, title, colors, palette)
+        return _render_versus(raw_cats, values, title, colors, palette)
+
     fig, ax = _new_figure(font_family=font_family, needs_arabic=needs_arabic)
     _style_axes(ax, colors)
     n_series = max(len(series), 1)
@@ -311,6 +323,150 @@ def render_process(steps: Sequence[str], title: Optional[str], colors) -> io.Byt
                         xytext=(x0 + box_w + gap * 0.15, 0.5),
                         arrowprops={"arrowstyle": "-|>", "color": "#8A8A8A",
                                     "linewidth": 1.6}, zorder=2)
+    return _finish(fig, title, colors)
+
+
+# ---------------------------------------------------------------------------
+# Advanced infographic types — pictogram, progress, funnel, versus
+# ---------------------------------------------------------------------------
+
+def _render_pictogram(cats, values, title, colors, palette) -> io.BytesIO:
+    """Classic infographic: rows of person icons, filled in proportion to
+    each value (percentages fill n/10 of 10 icons; other scales normalize
+    to the largest value)."""
+    from . import icon_library
+    n = max(len(cats), 1)
+    is_pct = values and all(0 <= v <= 100 for v in values)
+    scale = 100.0 if is_pct else (max(values) if values else 1) or 1
+
+    fig, ax = plt.subplots(figsize=(6.2, 0.62 * n + 0.5), dpi=DPI)
+    fig.patch.set_facecolor("white")
+    ax.set_xlim(0, 15.5)
+    ax.set_ylim(0, n)
+    ax.set_aspect("equal")
+    ax.axis("off")
+    dim = _tint(_hex(colors.primary), 0.87)
+
+    for i, (cat, val) in enumerate(zip(cats, values)):
+        y = n - i - 0.5
+        color = palette[i % 3]
+        ax.text(4.0, y, _wrap_shaped(str(cat), 26), ha="right", va="center",
+                fontsize=8.5, color=_tint(_hex(colors.primary), 0.15))
+        filled = val / scale * 10.0
+        for k in range(10):
+            frac = min(max(filled - k, 0.0), 1.0)
+            icon_color = color if frac >= 0.5 else dim
+            icon_library.draw_icon(ax, "person", 4.75 + k * 0.78, y, 0.62,
+                                   icon_color)
+        label = f"{val:g}%" if is_pct else f"{val:g}"
+        ax.text(12.9, y, label, ha="left", va="center", fontsize=11,
+                fontweight="bold", color=_hex(colors.primary))
+    return _finish(fig, title, colors)
+
+
+def _render_progress(cats, values, title, colors, palette) -> io.BytesIO:
+    """Rounded progress bars with the value at the bar tip. Percentages run
+    against 100; other scales normalize to the largest value."""
+    from matplotlib.patches import FancyBboxPatch
+    n = max(len(cats), 1)
+    is_pct = values and all(0 <= v <= 100 for v in values)
+    scale = 100.0 if is_pct else (max(values) if values else 1) or 1
+
+    fig, ax = plt.subplots(figsize=(6.2, 0.58 * n + 0.5), dpi=DPI)
+    fig.patch.set_facecolor("white")
+    ax.set_xlim(0, 14)
+    ax.set_ylim(0, n)
+    ax.axis("off")
+
+    bar_x, bar_w, bar_h = 4.3, 8.0, 0.30
+    for i, (cat, val) in enumerate(zip(cats, values)):
+        y = n - i - 0.5
+        color = palette[i % 3]
+        ax.text(4.0, y, _wrap_shaped(str(cat), 26), ha="right", va="center",
+                fontsize=8.5, color=_tint(_hex(colors.primary), 0.15))
+        ax.add_patch(FancyBboxPatch(
+            (bar_x, y - bar_h / 2), bar_w, bar_h,
+            boxstyle=f"round,pad=0,rounding_size={bar_h / 2}",
+            color=_tint(_hex(colors.primary), 0.90), zorder=3))
+        w = max(bar_w * (val / scale), bar_h)
+        ax.add_patch(FancyBboxPatch(
+            (bar_x, y - bar_h / 2), w, bar_h,
+            boxstyle=f"round,pad=0,rounding_size={bar_h / 2}",
+            color=color, zorder=4))
+        label = f"{val:g}%" if is_pct else f"{val:g}"
+        ax.text(bar_x + bar_w + 0.25, y, label, ha="left", va="center",
+                fontsize=10.5, fontweight="bold", color=_hex(colors.primary))
+    return _finish(fig, title, colors)
+
+
+def _render_funnel(cats, values, title, colors, palette) -> io.BytesIO:
+    """Centered funnel: each stage's width is proportional to its value —
+    pipelines, conversion stages, recruitment rounds."""
+    from matplotlib.patches import Polygon
+    n = max(len(cats), 1)
+    top = max(values) if values else 1
+
+    fig, ax = plt.subplots(figsize=(6.0, 0.66 * n + 0.5), dpi=DPI)
+    fig.patch.set_facecolor("white")
+    ax.set_xlim(0, 10)
+    ax.set_ylim(0, n)
+    ax.axis("off")
+
+    widths = [max((v / top) * 7.6, 1.6) for v in values] + [1.2]
+    for i, (cat, val) in enumerate(zip(cats, values)):
+        y1, y0 = n - i, n - i - 0.88
+        w_top, w_bot = widths[i], widths[i + 1] if i + 1 < len(widths) else widths[i]
+        cx = 5.0
+        ax.add_patch(Polygon([
+            (cx - w_top / 2, y1), (cx + w_top / 2, y1),
+            (cx + w_bot / 2, y0), (cx - w_bot / 2, y0)],
+            closed=True, color=palette[i % 3], zorder=3))
+        ax.text(cx, (y0 + y1) / 2, f"{val:g}", ha="center", va="center",
+                fontsize=11.5, fontweight="bold", color="white", zorder=4)
+        ax.text(9.9, (y0 + y1) / 2, _wrap_shaped(str(cat), 18), ha="right",
+                va="center", fontsize=8.5,
+                color=_tint(_hex(colors.primary), 0.15))
+    return _finish(fig, title, colors)
+
+
+def _render_versus(cats, values, title, colors, palette) -> io.BytesIO:
+    """A-vs-B comparison: two bold panels with a VS medallion between.
+    With more than two categories, falls back to bars."""
+    if len(cats) != 2 or len(values) != 2:
+        fig, ax = _new_figure()
+        _style_axes(ax, colors)
+        ax.bar(range(len(cats)), values,
+               color=[palette[i % 3] for i in range(len(cats))], zorder=3)
+        ax.set_xticks(range(len(cats)))
+        ax.set_xticklabels([shape_text(str(c)) for c in cats])
+        return _finish(fig, title, colors)
+
+    from matplotlib.patches import FancyBboxPatch, Circle
+    fig, ax = plt.subplots(figsize=(6.0, 2.3), dpi=DPI)
+    fig.patch.set_facecolor("white")
+    ax.set_xlim(0, 10)
+    ax.set_ylim(0, 4)
+    ax.axis("off")
+
+    for i, (cat, val, x0) in enumerate(((cats[0], values[0], 0.3),
+                                        (cats[1], values[1], 5.3))):
+        color = palette[i % 3]
+        ax.add_patch(FancyBboxPatch((x0, 0.5), 4.4, 3.0,
+                                    boxstyle="round,pad=0,rounding_size=0.25",
+                                    color=_tint(color, 0.90), zorder=2))
+        ax.add_patch(FancyBboxPatch((x0, 3.28), 4.4, 0.22,
+                                    boxstyle="round,pad=0,rounding_size=0.10",
+                                    color=color, zorder=3))
+        ax.text(x0 + 2.2, 2.35, f"{val:g}", ha="center", va="center",
+                fontsize=26, fontweight="bold", color=_hex(colors.primary),
+                zorder=4)
+        ax.text(x0 + 2.2, 1.15, _wrap_shaped(str(cat), 22), ha="center",
+                va="center", fontsize=9,
+                color=_tint(_hex(colors.primary), 0.2), zorder=4)
+
+    ax.add_patch(Circle((5.0, 2.0), 0.55, color=_hex(colors.accent), zorder=5))
+    ax.text(5.0, 2.0, "VS", ha="center", va="center", fontsize=12,
+            fontweight="bold", color="white", zorder=6)
     return _finish(fig, title, colors)
 
 

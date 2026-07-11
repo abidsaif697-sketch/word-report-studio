@@ -16,11 +16,37 @@
     "heading_ar": "Segoe UI",
     "body_ar": "Segoe UI"
   },
-  "font_sizes": {"h1": 30, "h2": 20, "h3": 15, "h4": 13, "body": 11, "caption": 9},
-  "cover": {"style": "image_hero", "art": "blocks"},
+  "font_sizes": {
+    "h1": 30,
+    "h2": 20,
+    "h3": 15,
+    "h4": 13,
+    "body": 11,
+    "caption": 9
+  },
+  "cover": {
+    "style": "image_hero",
+    "art": "blocks"
+  },
   "variants": [
-    {"variant_id": "default", "label": "Indigo / Amber"},
-    {"variant_id": "emerald", "label": "Emerald / Coral",
-     "colors_override": {"primary": "065F46", "secondary": "0D9488", "accent": "F97316"}}
+    {
+      "variant_id": "default",
+      "label": "Indigo / Amber"
+    },
+    {
+      "variant_id": "emerald",
+      "label": "Emerald / Coral",
+      "colors_override": {
+        "primary": "065F46",
+        "secondary": "0D9488",
+        "accent": "F97316"
+      }
+    },
+    {
+      "variant_id": "halftone",
+      "label": "Halftone Pop",
+      "cover_style_override": "image_hero",
+      "art_override": "halftone"
+    }
   ]
 }

@@ -32,6 +32,7 @@ design-grade cover makes.
 
 from __future__ import annotations
 import io
+import math
 import os
 import re
 from typing import List, Optional, Tuple
@@ -94,27 +95,51 @@ def _wrap_mixed(text: str, kind_latin: str, size: int, max_w: int,
     """Split into language runs (structure_model.runs_from_text), shape the
     Arabic ones, then word-wrap the mixed sequence to max_w. Returns lines
     as [(shaped_piece, font), ...] ready to draw left-to-right."""
-    lines: List[List[Tuple[str, ImageFont.FreeTypeFont]]] = []
-    current: List[Tuple[str, ImageFont.FreeTypeFont]] = []
+    lines: List[List[Tuple[str, ImageFont.FreeTypeFont, bool]]] = []
+    current: List[Tuple[str, ImageFont.FreeTypeFont, bool]] = []
     current_w = 0.0
     for run in runs_from_text(text):
         is_ar = run.lang == "ar"
         font = _run_font(kind_latin, size, bold, is_ar)
         words = run.text.split(" ")
         for wi, w in enumerate(words):
-            piece = w + (" " if wi < len(words) - 1 else "")
-            if piece == "":
+            trailing = " " if wi < len(words) - 1 else ""
+            if w == "" and trailing == "":
                 continue
-            shaped = shape_text(piece) if is_ar else piece
+            # shape the WORD only — bidi reordering eats trailing spaces,
+            # which is how Arabic words ended up glued together on covers
+            shaped = (shape_text(w) if is_ar else w) + trailing
             piece_w = font.getlength(shaped)
             if current and current_w + piece_w > max_w:
                 lines.append(current)
                 current, current_w = [], 0.0
-            current.append((shaped, font))
+            current.append((shaped, font, is_ar))
             current_w += piece_w
     if current:
         lines.append(current)
-    return lines[:4]
+
+    # within each line, consecutive Arabic pieces must render right-to-left:
+    # reverse each Arabic segment, keeping the spaces between words
+    def fix_rtl(line):
+        out, i = [], 0
+        while i < len(line):
+            if not line[i][2]:
+                out.append(line[i])
+                i += 1
+                continue
+            j = i
+            while j < len(line) and line[j][2]:
+                j += 1
+            seg = line[i:j][::-1]
+            had_trailing = line[j - 1][0].endswith(" ")
+            texts = [p[0].rstrip(" ") for p in seg]
+            texts = [t + " " for t in texts[:-1]] + \
+                    [texts[-1] + (" " if had_trailing else "")]
+            out.extend((t, seg[k][1], True) for k, t in enumerate(texts))
+            i = j
+        return out
+
+    return [fix_rtl(l) for l in lines[:4]]
 
 
 def _draw_mixed(draw, lines, x, y, fill, align="left", max_w=0,
@@ -122,14 +147,14 @@ def _draw_mixed(draw, lines, x, y, fill, align="left", max_w=0,
     """Draw lines produced by _wrap_mixed; returns y after the last line."""
     line_h = int(base_size * line_gap)
     for line in lines:
-        total_w = sum(font.getlength(piece) for piece, font in line)
+        total_w = sum(font.getlength(piece) for piece, font, *_ in line)
         if align == "center":
             lx = x + (max_w - total_w) / 2
         elif align == "right":
             lx = x + max_w - total_w
         else:
             lx = x
-        for piece, font in line:
+        for piece, font, *_ in line:
             draw.text((lx, y), piece, font=font, fill=fill)
             lx += font.getlength(piece)
         y += line_h
@@ -384,9 +409,189 @@ def _style_executive_dark(img, draw, meta, colors):
     _executive(img, draw, meta, colors, dark=True)
 
 
+# ---------------------------------------------------------------------------
+# Style: geometric (Islamic eight-point star band — dignified, regional)
+# ---------------------------------------------------------------------------
+
+def _star8(draw, cx, cy, r_out, r_in, fill, rot=0.0):
+    pts = []
+    for i in range(16):
+        r = r_out if i % 2 == 0 else r_in
+        a = math.pi / 8 * i + rot
+        pts.append((cx + r * math.cos(a), cy + r * math.sin(a)))
+    draw.polygon(pts, fill=fill)
+
+
+def _style_geometric(img, draw, meta, colors):
+    primary, secondary, accent = _rgb(colors.primary), _rgb(colors.secondary), _rgb(colors.accent)
+    white = (255, 255, 255)
+
+    band_h = 980
+    # lattice drawn on its own image so stars clip cleanly at the band edge
+    band = Image.new("RGB", (PAGE_W, band_h), primary)
+    band_draw = ImageDraw.Draw(band)
+    step = 210
+    for row in range(-1, band_h // step + 2):
+        for col in range(-1, PAGE_W // step + 2):
+            cx = col * step + (step // 2 if row % 2 else 0)
+            cy = row * step
+            tone = _mix(primary, white, 0.10 if (row + col) % 2 else 0.05)
+            _star8(band_draw, cx, cy, 92, 38, tone, rot=math.pi / 8)
+            _star8(band_draw, cx, cy, 46, 19, _mix(primary, white, 0.16))
+            if (row + col) % 4 == 0:
+                _star8(band_draw, cx, cy, 20, 8, accent)
+    img.paste(band, (0, 0))
+    # gold rule closing the band
+    draw.rectangle([0, band_h, PAGE_W, band_h + 10], fill=accent)
+    draw.rectangle([0, band_h + 18, PAGE_W, band_h + 22],
+                   fill=_mix(accent, white, 0.5))
+
+    margin = 130
+    org = (meta.get("organization") or "").upper()
+    if org:
+        org_lines = _wrap_mixed(org, "modern", 44, PAGE_W - 2 * margin, bold=True)
+        _draw_mixed(draw, org_lines, margin, 100, white, base_size=44)
+
+    lines = _wrap_mixed(meta.get("title", ""), "modern", 116,
+                        PAGE_W - 2 * margin, bold=True)
+    y = _draw_mixed(draw, lines, margin, band_h + 150, primary, base_size=116)
+    if meta.get("subtitle"):
+        y += 26
+        sub = _wrap_mixed(meta["subtitle"], "modern", 54, PAGE_W - 2 * margin)
+        y = _draw_mixed(draw, sub, margin, y, secondary, base_size=54)
+
+    year = _extract_year(meta)
+    if year:
+        f_year = _font("modern", 150, bold=True)
+        draw.text((PAGE_W - margin - f_year.getlength(year), PAGE_H - 560),
+                  year, font=f_year, fill=_mix(primary, white, 0.82))
+
+    fy = PAGE_H - 300
+    draw.rectangle([margin, fy, margin + 700, fy + 6], fill=accent)
+    parts = [p for p in (meta.get("author"), meta.get("date")) if p]
+    if parts:
+        _draw_mixed(draw, _wrap_mixed("     ".join(parts), "modern", 42,
+                                      PAGE_W - 2 * margin),
+                    margin, fy + 40, _rgb(colors.text), base_size=42)
+    if meta.get("confidentiality"):
+        _draw_mixed(draw, _wrap_mixed(meta["confidentiality"], "modern", 36,
+                                      PAGE_W - 2 * margin, bold=True),
+                    margin, fy + 130, accent, base_size=36)
+
+
+# ---------------------------------------------------------------------------
+# Style: contours (topographic flow lines — analytical, modern)
+# ---------------------------------------------------------------------------
+
+def _style_contours(img, draw, meta, colors):
+    primary, secondary, accent = _rgb(colors.primary), _rgb(colors.secondary), _rgb(colors.accent)
+    white = (255, 255, 255)
+
+    # nested hand-drawn contour rings around an off-page focus point
+    focus_x, focus_y = PAGE_W + 150, 420
+    for i in range(26):
+        r = 180 + i * 88
+        tone = _mix(white, secondary, max(0.06, 0.30 - i * 0.011))
+        width = 7 if i % 5 == 0 else 3
+        bbox = [focus_x - r, focus_y - r * 0.86, focus_x + r, focus_y + r * 0.86]
+        draw.ellipse(bbox, outline=tone, width=width)
+    # accent ring pair
+    for r in (515, 529):
+        draw.ellipse([focus_x - r, focus_y - r * 0.86, focus_x + r, focus_y + r * 0.86],
+                     outline=accent, width=5)
+    # solid base panel to seat the title
+    draw.rectangle([0, 1210, PAGE_W, PAGE_H], fill=white)
+    draw.rectangle([0, 1210, PAGE_W, 1218], fill=_mix(secondary, white, 0.55))
+
+    margin = 130
+    org = (meta.get("organization") or "").upper()
+    if org:
+        org_lines = _wrap_mixed(org, "modern", 44, PAGE_W - 2 * margin, bold=True)
+        _draw_mixed(draw, org_lines, margin, 118, primary, base_size=44)
+        draw.rectangle([margin, 190, margin + 160, 198], fill=accent)
+
+    lines = _wrap_mixed(meta.get("title", ""), "modern", 118,
+                        PAGE_W - 2 * margin, bold=True)
+    y = _draw_mixed(draw, lines, margin, 1340, primary, base_size=118)
+    if meta.get("subtitle"):
+        y += 26
+        sub = _wrap_mixed(meta["subtitle"], "modern", 54, PAGE_W - 2 * margin)
+        y = _draw_mixed(draw, sub, margin, y, secondary, base_size=54)
+
+    fy = PAGE_H - 300
+    draw.rectangle([margin, fy, margin + 700, fy + 6], fill=accent)
+    parts = [p for p in (meta.get("author"), meta.get("date")) if p]
+    if parts:
+        _draw_mixed(draw, _wrap_mixed("     ".join(parts), "modern", 42,
+                                      PAGE_W - 2 * margin),
+                    margin, fy + 40, _rgb(colors.text), base_size=42)
+    if meta.get("confidentiality"):
+        _draw_mixed(draw, _wrap_mixed(meta["confidentiality"], "modern", 36,
+                                      PAGE_W - 2 * margin, bold=True),
+                    margin, fy + 130, accent, base_size=36)
+
+
+# ---------------------------------------------------------------------------
+# Style: halftone (dot-gradient field — energetic, contemporary)
+# ---------------------------------------------------------------------------
+
+def _style_halftone(img, draw, meta, colors):
+    primary, secondary, accent = _rgb(colors.primary), _rgb(colors.secondary), _rgb(colors.accent)
+    white = (255, 255, 255)
+
+    draw.rectangle([0, 0, PAGE_W, 900], fill=primary)
+    # halftone dots dissolving downward out of the color field
+    step = 56
+    for row in range(30):
+        y = 900 + row * step * 0.62
+        radius = max(2.0, 17 - row * 0.62)
+        for col in range(-1, PAGE_W // step + 2):
+            x = col * step + (step // 2 if row % 2 else 0)
+            # dots thin out towards the right for a sweep effect
+            if (col * 7 + row * 13) % 10 < (10 - row // 3):
+                tone = primary if row < 7 else _mix(primary, white, min(0.75, row * 0.05))
+                draw.ellipse([x - radius, y - radius, x + radius, y + radius],
+                             fill=tone)
+    # accent chip
+    draw.rectangle([PAGE_W - 480, 690, PAGE_W - 130, 900], fill=accent)
+
+    margin = 130
+    org = (meta.get("organization") or "").upper()
+    if org:
+        org_lines = _wrap_mixed(org, "modern", 44, PAGE_W - 2 * margin, bold=True)
+        _draw_mixed(draw, org_lines, margin, 118, white, base_size=44)
+
+    year = _extract_year(meta)
+    if year:
+        f_year = _font("modern", 120, bold=True)
+        draw.text((PAGE_W - 455, 730), year, font=f_year, fill=white)
+
+    lines = _wrap_mixed(meta.get("title", ""), "modern", 118,
+                        PAGE_W - 2 * margin, bold=True)
+    y = _draw_mixed(draw, lines, margin, 1490, primary, base_size=118)
+    if meta.get("subtitle"):
+        y += 26
+        sub = _wrap_mixed(meta["subtitle"], "modern", 54, PAGE_W - 2 * margin)
+        y = _draw_mixed(draw, sub, margin, y, secondary, base_size=54)
+
+    fy = PAGE_H - 300
+    draw.rectangle([margin, fy, margin + 700, fy + 6], fill=accent)
+    parts = [p for p in (meta.get("author"), meta.get("date")) if p]
+    if parts:
+        _draw_mixed(draw, _wrap_mixed("     ".join(parts), "modern", 42,
+                                      PAGE_W - 2 * margin),
+                    margin, fy + 40, _rgb(colors.text), base_size=42)
+    if meta.get("confidentiality"):
+        _draw_mixed(draw, _wrap_mixed(meta["confidentiality"], "modern", 36,
+                                      PAGE_W - 2 * margin, bold=True),
+                    margin, fy + 130, accent, base_size=36)
+
+
 _STYLES = {"diagonal": _style_diagonal, "blocks": _style_blocks, "frame": _style_frame,
            "executive_light": _style_executive_light,
-           "executive_dark": _style_executive_dark}
+           "executive_dark": _style_executive_dark,
+           "geometric": _style_geometric, "contours": _style_contours,
+           "halftone": _style_halftone}
 
 
 def render_cover_png(art_style: str, meta: dict, colors) -> io.BytesIO:

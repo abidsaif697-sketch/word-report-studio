@@ -3,18 +3,80 @@
   "name": "Corporate Modern",
   "category": "corporate",
   "description": "Clean modern corporate report. Good all-purpose default for business long-form reports.",
-  "supports_lang": ["en", "ar", "bilingual"],
-  "page": { "size": "A4", "margin_top_in": 1.0, "margin_bottom_in": 1.0, "margin_left_in": 1.0, "margin_right_in": 1.0, "mirror_margins": true },
-  "colors": { "primary": "1F3864", "secondary": "2E74B5", "accent": "C00000", "text": "222222", "muted": "6E6E6E", "background": "FFFFFF" },
-  "fonts": { "heading_en": "Calibri Light", "body_en": "Calibri", "heading_ar": "Traditional Arabic", "body_ar": "Arial" },
-  "font_sizes": { "h1": 28, "h2": 20, "h3": 16, "h4": 13, "body": 11, "caption": 9 },
-  "cover": { "style": "centered_band", "show_confidentiality": true },
-  "header_footer": { "show_page_numbers": true, "show_section_title": true, "footer_text": "" },
+  "supports_lang": [
+    "en",
+    "ar",
+    "bilingual"
+  ],
+  "page": {
+    "size": "A4",
+    "margin_top_in": 1.0,
+    "margin_bottom_in": 1.0,
+    "margin_left_in": 1.0,
+    "margin_right_in": 1.0,
+    "mirror_margins": true
+  },
+  "colors": {
+    "primary": "1F3864",
+    "secondary": "2E74B5",
+    "accent": "C00000",
+    "text": "222222",
+    "muted": "6E6E6E",
+    "background": "FFFFFF"
+  },
+  "fonts": {
+    "heading_en": "Calibri Light",
+    "body_en": "Calibri",
+    "heading_ar": "Traditional Arabic",
+    "body_ar": "Arial"
+  },
+  "font_sizes": {
+    "h1": 28,
+    "h2": 20,
+    "h3": 16,
+    "h4": 13,
+    "body": 11,
+    "caption": 9
+  },
+  "cover": {
+    "style": "centered_band",
+    "show_confidentiality": true
+  },
+  "header_footer": {
+    "show_page_numbers": true,
+    "show_section_title": true,
+    "footer_text": ""
+  },
   "table_style": "Light Grid Accent 1",
   "toc": true,
   "variants": [
-    { "variant_id": "default", "label": "Navy / Modern" },
-    { "variant_id": "teal", "label": "Teal Accent", "colors_override": { "primary": "0F5C5C", "secondary": "13898A", "accent": "E07A00" } },
-    { "variant_id": "charcoal", "label": "Charcoal / Minimal", "colors_override": { "primary": "2B2B2B", "secondary": "5A5A5A", "accent": "B08A2E" } }
+    {
+      "variant_id": "default",
+      "label": "Navy / Modern"
+    },
+    {
+      "variant_id": "teal",
+      "label": "Teal Accent",
+      "colors_override": {
+        "primary": "0F5C5C",
+        "secondary": "13898A",
+        "accent": "E07A00"
+      }
+    },
+    {
+      "variant_id": "charcoal",
+      "label": "Charcoal / Minimal",
+      "colors_override": {
+        "primary": "2B2B2B",
+        "secondary": "5A5A5A",
+        "accent": "B08A2E"
+      }
+    },
+    {
+      "variant_id": "contours",
+      "label": "Contour Lines",
+      "cover_style_override": "image_hero",
+      "art_override": "contours"
+    }
   ]
 }

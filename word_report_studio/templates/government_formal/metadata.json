@@ -3,17 +3,71 @@
   "name": "Government / Official",
   "category": "government",
   "description": "Conservative formal layout for ministries, institutions, and official long-form reports.",
-  "supports_lang": ["en", "ar", "bilingual"],
-  "page": { "size": "A4", "margin_top_in": 1.1, "margin_bottom_in": 1.1, "margin_left_in": 1.1, "margin_right_in": 1.1, "mirror_margins": true },
-  "colors": { "primary": "0B3D2E", "secondary": "1B5E20", "accent": "8A6D3B", "text": "1A1A1A", "muted": "5F5F5F", "background": "FFFFFF" },
-  "fonts": { "heading_en": "Times New Roman", "body_en": "Times New Roman", "heading_ar": "Traditional Arabic", "body_ar": "Simplified Arabic" },
-  "font_sizes": { "h1": 26, "h2": 18, "h3": 14, "h4": 12, "body": 11, "caption": 9 },
-  "cover": { "style": "minimal_top", "show_confidentiality": true },
-  "header_footer": { "show_page_numbers": true, "show_section_title": true, "footer_text": "" },
+  "supports_lang": [
+    "en",
+    "ar",
+    "bilingual"
+  ],
+  "page": {
+    "size": "A4",
+    "margin_top_in": 1.1,
+    "margin_bottom_in": 1.1,
+    "margin_left_in": 1.1,
+    "margin_right_in": 1.1,
+    "mirror_margins": true
+  },
+  "colors": {
+    "primary": "0B3D2E",
+    "secondary": "1B5E20",
+    "accent": "8A6D3B",
+    "text": "1A1A1A",
+    "muted": "5F5F5F",
+    "background": "FFFFFF"
+  },
+  "fonts": {
+    "heading_en": "Times New Roman",
+    "body_en": "Times New Roman",
+    "heading_ar": "Traditional Arabic",
+    "body_ar": "Simplified Arabic"
+  },
+  "font_sizes": {
+    "h1": 26,
+    "h2": 18,
+    "h3": 14,
+    "h4": 12,
+    "body": 11,
+    "caption": 9
+  },
+  "cover": {
+    "style": "minimal_top",
+    "show_confidentiality": true
+  },
+  "header_footer": {
+    "show_page_numbers": true,
+    "show_section_title": true,
+    "footer_text": ""
+  },
   "table_style": "Table Grid",
   "toc": true,
   "variants": [
-    { "variant_id": "default", "label": "Formal Green" },
-    { "variant_id": "navy", "label": "Formal Navy", "colors_override": { "primary": "0A2A4A", "secondary": "1D4E7A", "accent": "8A6D3B" } }
+    {
+      "variant_id": "default",
+      "label": "Formal Green"
+    },
+    {
+      "variant_id": "navy",
+      "label": "Formal Navy",
+      "colors_override": {
+        "primary": "0A2A4A",
+        "secondary": "1D4E7A",
+        "accent": "8A6D3B"
+      }
+    },
+    {
+      "variant_id": "geometric",
+      "label": "Geometric Heritage",
+      "cover_style_override": "image_hero",
+      "art_override": "geometric"
+    }
   ]
 }

@@ -16,11 +16,37 @@
     "heading_ar": "Traditional Arabic",
     "body_ar": "Sakkal Majalla"
   },
-  "font_sizes": {"h1": 30, "h2": 20, "h3": 16, "h4": 13, "body": 11, "caption": 9},
-  "cover": {"style": "image_hero", "art": "frame"},
+  "font_sizes": {
+    "h1": 30,
+    "h2": 20,
+    "h3": 16,
+    "h4": 13,
+    "body": 11,
+    "caption": 9
+  },
+  "cover": {
+    "style": "image_hero",
+    "art": "frame"
+  },
   "variants": [
-    {"variant_id": "default", "label": "Emerald / Gold"},
-    {"variant_id": "navy", "label": "Royal Navy / Gold",
-     "colors_override": {"primary": "12264A", "secondary": "1D3E6E", "accent": "C9A227"}}
+    {
+      "variant_id": "default",
+      "label": "Emerald / Gold"
+    },
+    {
+      "variant_id": "navy",
+      "label": "Royal Navy / Gold",
+      "colors_override": {
+        "primary": "12264A",
+        "secondary": "1D3E6E",
+        "accent": "C9A227"
+      }
+    },
+    {
+      "variant_id": "geometric_gold",
+      "label": "Geometric Gold",
+      "cover_style_override": "image_hero",
+      "art_override": "geometric"
+    }
   ]
 }

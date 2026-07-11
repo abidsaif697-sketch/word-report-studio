@@ -149,6 +149,26 @@ def main():
         check("Lusail correctly rejected",
               not _font_covers_arabic("Lusail"))
 
+        # ------------------------------------------------ advanced visuals
+        section("Advanced visuals")
+        from app import chart_engine, cover_art
+        colors = tm.get("executive_premium").resolved_colors(
+            tm.get("executive_premium").variants[0])
+        for ctype in ("pictogram", "progress", "funnel", "versus"):
+            vals = [80, 60] if ctype == "versus" else [80, 60, 40]
+            cats = ["A / أ", "B / ب"] if ctype == "versus" else ["A / أ", "B / ب", "C / ج"]
+            buf = chart_engine.render_chart(ctype, cats, [("", vals)],
+                                            "t", colors)
+            check(f"chart type {ctype} renders", len(buf.getvalue()) > 5000)
+        meta = {"title": "T / عنوان", "organization": "Org / وزارة الداخلية"}
+        for style in ("geometric", "contours", "halftone", "diagonal"):
+            buf = cover_art.render_cover_png(style, meta, colors)
+            check(f"cover style {style} renders", len(buf.getvalue()) > 20000)
+        # the RTL space fix: two Arabic words must stay two pieces with a space
+        lines = cover_art._wrap_mixed("وزارة الداخلية", "modern", 40, 4000)
+        flat = "".join(p for p, _f, *_ in lines[0])
+        check("Arabic words keep their space on covers", " " in flat.strip())
+
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
 

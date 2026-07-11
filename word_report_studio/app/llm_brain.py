@@ -73,11 +73,15 @@ Plain paragraphs for narrative text.
 %%visualize%%               (add this line right after a table that contains
                              numbers so a chart is also generated from it)
 
-```chart bar Title Here     (chart types: bar, line, area, pie, donut.
-series: Revenue, Profit      Use line/area for trends over time,
-2021: 48.2, 6.1              donut/pie for shares of a whole,
-2022: 55.6, 7.9              bar for comparisons)
-```
+```chart bar Title Here     (chart types: bar, line, area, pie, donut,
+series: Revenue, Profit      pictogram, progress, funnel, versus.
+2021: 48.2, 6.1              line/area = trends over time; donut/pie =
+2022: 55.6, 7.9              shares of a whole; bar = comparisons;
+```                          pictogram = people-percentages as icon rows;
+                             progress = completion bars per item;
+                             funnel = pipeline/conversion stages, largest
+                             value first; versus = EXACTLY two values
+                             head-to-head, e.g. this year vs last year)
 
 ::: timeline Title          (events over years/quarters)
 2023 | What happened
