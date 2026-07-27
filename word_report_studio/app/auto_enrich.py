@@ -182,7 +182,15 @@ def _kpi_from_text(text: str) -> Optional[KpiItem]:
     if prefix_pos > 0 and text[prefix_pos - 1] in "+-":
         value = text[prefix_pos - 1] + value
         span = text[prefix_pos - 1] + span
-    label = text.replace(span, " ").strip(" \t-–—:،,.;؛/\\")
+    # a segment can hold several comma-joined clauses, each about a different
+    # fact ("...averaged 4.2 hours, a 12.4M SAR budget was allocated, and...").
+    # Using the whole segment as the label source bleeds a neighboring clause's
+    # facts into this card; keep only the clause the matched number lives in.
+    # ",\s+" (comma + space) is safe against thousands separators like "1,204",
+    # which never have a space after the comma.
+    clauses = re.split(r"[,،]\s+", text)
+    label_source = next((c for c in clauses if span in c), text)
+    label = label_source.replace(span, " ").strip(" \t-–—:،,.;؛/\\")
     label = re.sub(r"\s{2,}", " ", label)
     if len(label) < 3:
         return None

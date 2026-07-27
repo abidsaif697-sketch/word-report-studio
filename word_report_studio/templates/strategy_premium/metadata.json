@@ -43,6 +43,7 @@
       }
     }
   ],
+  "section_dividers": true,
   "divider_style": "page",
   "opener_motif": "grid",
   "page_ribbon": true

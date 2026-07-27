@@ -354,18 +354,44 @@ Output: one JSON object, nothing else.
 """
 
 
+def _slots_json_schema(slots) -> dict:
+    """Ollama constrains generation token-by-token against this schema (it
+    ships its own JSON-schema-to-grammar compiler), so the model CANNOT
+    emit a key outside the real slot ids, a non-string value, or extra
+    keys/commentary around the object — the whole class of "malformed JSON"
+    and "hallucinated slot id" failures is gone by construction. It does
+    NOT stop the model from writing the wrong (but validly-shaped) content
+    into a real slot — that class of mistake still needs sanitize_mapping."""
+    props = {str(s.slot_id): {"type": "string",
+                              "maxLength": max(int(s.capacity * 1.35), 20)}
+             for s in slots}
+    return {"type": "object", "properties": props, "additionalProperties": False}
+
+
+_INVENTORY_ECHO_RE = re.compile(r"\bpage\s+\d+\s*\|.{0,40}\bnow\s*:", re.IGNORECASE)
+
+
+def _looks_like_inventory_echo(mapping: dict) -> bool:
+    """True if any value regurgitates the "SLOTS:" prompt's own inventory-
+    line format (e.g. "page 1 | micro | max 40 chars | now: ...") instead of
+    real content — an observed failure mode of the critique/polish pass."""
+    return any(_INVENTORY_ECHO_RE.search(str(v)) for v in mapping.values())
+
+
 def map_content_to_slots(brain: LocalLLMBrain, raw_text: str,
-                         slot_inventory: str) -> Optional[dict]:
+                         slots) -> Optional[dict]:
     """Ask the local model to assign the user's content to template slots.
     Returns {slot_id(str): text} or None (caller falls back to rules).
     Uses the FAST model — slot work is structured enough for a 3B, which
     roughly halves wall-clock time on this CPU-only machine."""
     import json as _json
+    from .template_filler import describe_slots
     model = brain.pick_fast_model()
     if not model:
         return None
     brain.free_other_models(keep=model)
-    user_msg = (f"SLOTS:\n{slot_inventory}\n\n"
+    schema = _slots_json_schema(slots)
+    user_msg = (f"SLOTS:\n{describe_slots(slots)}\n\n"
                 f"USER CONTENT:\n{raw_text}\n\nReturn the JSON mapping now.")
     messages = [
         {"role": "system", "content": _SLOT_SYSTEM_PROMPT},
@@ -374,7 +400,7 @@ def map_content_to_slots(brain: LocalLLMBrain, raw_text: str,
 
     def _ask(msgs):
         resp = brain._post_json("/api/chat", {
-            "model": model, "stream": False, "format": "json",
+            "model": model, "stream": False, "format": schema,
             # chunked inventories are small — 4k context prefills faster
             "options": {"temperature": 0.0, "num_ctx": 4096,
                         "keep_alive": "15m"},
@@ -407,13 +433,18 @@ def map_content_to_slots(brain: LocalLLMBrain, raw_text: str,
         brain.last_error = "slot mapping: model returned no usable JSON"
         return None
 
-    # designer's second look: critique the mapping against the award rubric
+    # designer's second look: critique the mapping against the award rubric.
+    # Unlike the main restructure() flow, this had NO validation at all —
+    # observed in practice: the model echoed the "SLOTS:" inventory line
+    # format back as a slot's value ("page 1 | micro | max 40 chars | now:
+    # ..."), and the caller trusted it blindly. Reject a polish pass that
+    # regurgitates the inventory format and keep the already-valid first pass.
     try:
         polished = _parse(_ask(messages + [
             {"role": "assistant", "content": first_raw},
             {"role": "user", "content": SLOT_CRITIQUE_RUBRIC},
         ]))
-        if polished:
+        if polished and not _looks_like_inventory_echo(polished):
             return polished
     except Exception:
         pass
@@ -427,7 +458,6 @@ def map_content_to_slots_chunked(brain: LocalLLMBrain, raw_text: str,
     local models slow, lazy in the middle, and prone to timeouts; short
     focused prompts are dramatically more reliable — and give the user
     real progress feedback."""
-    from .template_filler import describe_slots
     log = log or (lambda *_: None)
     pages = sorted({s.page for s in slots if s.kind != "page-number"})
     mapping: dict = {}
@@ -436,7 +466,7 @@ def map_content_to_slots_chunked(brain: LocalLLMBrain, raw_text: str,
         chunk = [s for s in slots if s.page in chunk_pages]
         if not chunk:
             continue
-        m = map_content_to_slots(brain, raw_text, describe_slots(chunk))
+        m = map_content_to_slots(brain, raw_text, chunk)
         got = len(m or {})
         log(f"  AI mapped pages {min(chunk_pages)}–{max(chunk_pages)}: "
             f"{got} slot(s) proposed")

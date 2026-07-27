@@ -60,6 +60,15 @@ def convert_to_pdf(docx_path: str, output_dir: Optional[str] = None, timeout: in
     out_dir = output_dir or os.path.dirname(docx_path) or "."
     os.makedirs(out_dir, exist_ok=True)
 
+    # normpath is load-bearing: callers build paths with os.path.join() on a
+    # forward-slash output_dir (e.g. --output-dir "output/reports"), which on
+    # Windows yields a MIXED-separator path like "output/reports\file.docx".
+    # Windows itself opens that fine, but soffice.exe's own path parsing does
+    # not — it fails with "source file could not be loaded" on a perfectly
+    # valid file. Normalizing to one consistent separator fixes it.
+    out_dir = os.path.normpath(out_dir)
+    docx_path = os.path.normpath(docx_path)
+
     cmd = [soffice, "--headless", "--norestore", "--convert-to", "pdf", "--outdir", out_dir, docx_path]
     try:
         subprocess.run(cmd, check=True, timeout=timeout, capture_output=True)

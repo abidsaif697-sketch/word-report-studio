@@ -40,6 +40,8 @@ TEMPLATES_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "templa
 
 
 def main():
+    from cleanup import run_cleanup
+    run_cleanup()
     ap = argparse.ArgumentParser(description="Generate offline bilingual Word report layouts.")
     ap.add_argument("--input", required=True, help="Path to Markdown-ish or JSON content file")
     ap.add_argument("--title", default="Untitled Report")
@@ -158,7 +160,6 @@ def main():
             for w in warns[:12]:
                 print(f"  ! {w}")
         if args.pdf:
-            from app import pdf_exporter
             pdf = pdf_exporter.convert_to_pdf(out_path, args.output_dir)
             print(f"PDF preview: {pdf}")
             if args.design_review:
@@ -248,10 +249,16 @@ def main():
     if args.pdf:
         if pdf_exporter.is_available():
             pdf_map = pdf_exporter.convert_batch(list(docx_paths.values()), output_dir=args.output_dir)
+            failed = {k: v for k, v in pdf_map.items() if v.startswith("ERROR:")}
             for opt, docx_path in results:
                 pdf_paths[opt.option_id] = pdf_map.get(docx_path, "")
             thumb_paths = preview_gallery.render_thumbnails(pdf_paths, os.path.join(args.output_dir, "thumbnails"))
-            print("[4/4] Exported PDF previews.")
+            if failed:
+                print(f"[4/4] PDF export failed for {len(failed)} of {len(pdf_map)} file(s):")
+                for path, err in failed.items():
+                    print(f"   - {path}: {err}")
+            else:
+                print("[4/4] Exported PDF previews.")
         else:
             print("[4/4] LibreOffice not found on this machine — skipped PDF export "
                   "(install it to enable --pdf; the .docx files are already complete).")

@@ -49,6 +49,7 @@
       "art_override": "geometric"
     }
   ],
+  "section_dividers": true,
   "divider_style": "page",
   "opener_motif": "stars",
   "page_ribbon": true

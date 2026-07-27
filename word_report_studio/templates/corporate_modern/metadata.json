@@ -79,6 +79,7 @@
       "art_override": "contours"
     }
   ],
+  "section_dividers": true,
   "divider_style": "page",
   "opener_motif": "contours",
   "page_ribbon": true

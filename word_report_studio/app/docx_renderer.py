@@ -74,11 +74,27 @@ class DocxRenderer:
     # Public entry points
     # ------------------------------------------------------------------
 
+    # Chapter dividers (band or full-page poster) force a page break before
+    # every top-level section — right for a handful of real chapters, but
+    # ingested Word documents routinely style every numbered clause as
+    # "Heading 1", producing 50-100+ "sections". Treated as chapters, each
+    # one costs a forced early break (wasted tail of the previous page) plus,
+    # for poster style, a whole bonus page — a 30-page source document can
+    # balloon past 150 pages this way. Above this count we no longer trust
+    # the heading structure to represent real chapters, so dividers are
+    # switched off and sections render inline like any other heading.
+    MAX_DIVIDER_SECTIONS = 12
+
     def render(self, report: ReportDocument, template: TemplateSpec, variant: Variant,
                output_path: str) -> str:
         colors = template.resolved_colors(variant)
         cover_style = template.resolved_cover_style(variant)
         cover_art_style = template.resolved_cover_art(variant)
+
+        if (template.section_dividers
+                and len(report.sections) > self.MAX_DIVIDER_SECTIONS):
+            import dataclasses
+            template = dataclasses.replace(template, section_dividers=False)
 
         word = Document()
         self._last_break_el = None
