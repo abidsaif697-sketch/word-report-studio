@@ -7,7 +7,8 @@
 <meta name="description" content="Forensically inspected, direct verified bidding, and hassle-free Metrash2 ownership transfer.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;600&display=swap">
 <style>
 /* ── Layout concept ───────────────────────────────────────────────────────────
    A Gulf concourse in front, a clearing terminal behind. Depth is warm tonal
@@ -44,7 +45,6 @@
   --dune-far:#EFE8DE; --dune-mid:#DFD2C0; --dune-near:#C9B9A2; --ground:#B4A085;
 
   /* Type */
-  --luxury:"Cinzel",Georgia,"Times New Roman",serif;
   --sans:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
   --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
   --arabic:"IBM Plex Sans Arabic","Plus Jakarta Sans",system-ui,sans-serif;
@@ -73,6 +73,15 @@ button{font:inherit}
 .wrap{max-width:var(--cap); margin-inline:auto; padding-inline:var(--margin)}
 :focus-visible{outline:2px solid var(--maroon); outline-offset:2px; border-radius:2px}
 
+.ms{
+  font-family:"Material Symbols Outlined"; font-weight:normal; font-style:normal;
+  line-height:1; letter-spacing:normal; text-transform:none; white-space:nowrap;
+  direction:ltr; font-feature-settings:"liga"; -webkit-font-feature-settings:"liga";
+  -webkit-font-smoothing:antialiased; font-variation-settings:"wght" 400,"FILL" 0;
+  font-size:20px; display:inline-block; vertical-align:middle;
+  visibility:hidden;
+}
+.icons-ready .ms{visibility:visible}
 .eyebrow{font-size:.75rem; font-weight:600; line-height:1; letter-spacing:.06em; text-transform:uppercase; color:var(--taupe)}
 .eyebrow-m{color:var(--maroon)}
 
@@ -130,8 +139,8 @@ button{font:inherit}
 .masthead-in{display:flex; align-items:center; gap:1.5rem; height:64px}
 .mark{display:flex; align-items:center; gap:.625rem; margin-right:auto; text-decoration:none}
 .mark-glyph{width:30px; height:30px; flex:none; border-radius:3px; background:var(--maroon);
-  display:grid; place-items:center; color:var(--gold); font-family:var(--luxury); font-weight:700; font-size:.9375rem}
-.mark-name{display:block; font-family:var(--luxury); font-weight:600; font-size:.9375rem; letter-spacing:.02em; color:var(--obsidian)}
+  display:grid; place-items:center; color:var(--gold); font-weight:800; font-size:.9375rem}
+.mark-name{display:block; font-weight:800; font-size:.9375rem; letter-spacing:-.02em; color:var(--obsidian)}
 .mark-sub{display:block; font-size:.625rem; font-weight:500; letter-spacing:.1em; color:var(--taupe); text-transform:uppercase}
 .nav{display:flex; gap:1.5rem}
 .nav a{font-size:.875rem; font-weight:500; color:var(--charcoal); text-decoration:none}
@@ -153,8 +162,8 @@ button{font:inherit}
 .stage-in{position:relative; z-index:1; padding-block:4rem 9rem; text-align:center}
 @media (max-width:767px){ .stage-in{padding-block:2.5rem 5.5rem} }
 
-h1.hero-h{font-family:var(--luxury); font-size:clamp(1.875rem,4.6vw,3.25rem); font-weight:700;
-  line-height:1.12; letter-spacing:-.02em; margin-block:1rem .875rem; max-width:19ch; margin-inline:auto}
+h1.hero-h{font-size:clamp(1.875rem,4.8vw,3.25rem); font-weight:800;
+  line-height:1.1; letter-spacing:-.03em; margin-block:1rem .875rem; max-width:19ch; margin-inline:auto}
 .hero-lede{font-size:1.0625rem; line-height:1.65; color:var(--charcoal); max-width:60ch; margin-inline:auto}
 .hero-ar{font-family:var(--arabic); font-size:1rem; color:var(--taupe); direction:rtl; margin-top:.625rem}
 
@@ -189,8 +198,8 @@ section{padding-block:5rem}
 .band-section{background:var(--section); border-top:1px solid var(--line); border-bottom:1px solid var(--line)}
 .sec-hd{max-width:62ch; margin-bottom:2.5rem}
 .sec-hd.center{margin-inline:auto; text-align:center}
-h2.sec-h{font-family:var(--luxury); font-size:clamp(1.5rem,3.2vw,2.25rem); font-weight:600;
-  line-height:1.2; letter-spacing:-.01em; margin-block:.75rem .625rem}
+h2.sec-h{font-size:clamp(1.5rem,3.4vw,2.25rem); font-weight:800;
+  line-height:1.15; letter-spacing:-.03em; text-transform:uppercase; margin-block:.75rem .625rem}
 .sec-lede{font-size:1.0625rem; line-height:1.65; color:var(--charcoal)}
 
 /* ── Lot cards ───────────────────────────────────────────────────────────── */
@@ -232,7 +241,7 @@ h2.sec-h{font-family:var(--luxury); font-size:clamp(1.5rem,3.2vw,2.25rem); font-
 .steps{display:grid; grid-template-columns:repeat(3,1fr); gap:var(--gutter); margin-top:2.5rem}
 @media (max-width:767px){ .steps{grid-template-columns:1fr} }
 .step{padding-top:1.125rem; border-top:2px solid var(--maroon)}
-.step-n{font-family:var(--mono); font-size:.75rem; font-weight:700; letter-spacing:.06em; color:var(--maroon)}
+.step-n{display:flex; align-items:center; font-family:var(--mono); font-size:.75rem; font-weight:700; letter-spacing:.06em; color:var(--maroon)}
 .step h3{font-size:1.0625rem; font-weight:700; margin-block:.5rem .375rem}
 .step p{font-size:.875rem; line-height:1.55; color:var(--charcoal)}
 
@@ -286,7 +295,7 @@ h2.sec-h{font-family:var(--luxury); font-size:clamp(1.5rem,3.2vw,2.25rem); font-
 .term-art{position:absolute; inset:0; z-index:0; opacity:.3; will-change:transform; pointer-events:none}
 .term-art svg{width:100%; height:100%}
 .term-in{position:relative; z-index:1}
-.term-h{font-family:var(--luxury); font-size:clamp(1.5rem,3.4vw,2.5rem); font-weight:700; line-height:1.15; letter-spacing:.01em}
+.term-h{font-size:clamp(1.5rem,3.6vw,2.5rem); font-weight:800; line-height:1.12; letter-spacing:-.03em; text-transform:uppercase}
 .term-lede{font-size:1rem; line-height:1.65; color:var(--term-dim); max-width:58ch; margin-top:.75rem}
 .term-tabs{display:flex; flex-wrap:wrap; gap:.375rem; margin:2rem 0 1rem; border-bottom:1px solid var(--term-line); padding-bottom:.75rem}
 .term-tab{font-family:var(--mono); font-size:.75rem; font-weight:500; letter-spacing:.04em;
@@ -348,7 +357,7 @@ h2.sec-h{font-family:var(--luxury); font-size:clamp(1.5rem,3.2vw,2.25rem); font-
 
 /* ── Closing ─────────────────────────────────────────────────────────────── */
 .closing{position:relative; overflow:hidden; background:var(--obsidian); color:#F0EAE2; border-radius:10px; padding:3.5rem var(--margin)}
-.closing h2{font-family:var(--luxury); color:#fff; font-size:clamp(1.5rem,3vw,2.25rem); font-weight:600; text-align:center}
+.closing h2{color:#fff; font-size:clamp(1.5rem,3.2vw,2.25rem); font-weight:800; letter-spacing:-.03em; text-transform:uppercase; text-align:center}
 .closing-art{position:absolute; inset:0; opacity:.12; will-change:transform; pointer-events:none}
 .closing-in{position:relative; z-index:1}
 .closing-lede{text-align:center; max-width:52ch; margin:.875rem auto 0; color:#B5ADA3; line-height:1.65}
@@ -491,7 +500,7 @@ footer{background:var(--section); border-top:1px solid var(--line); padding-bloc
     <form class="search" role="search" id="searchForm">
       <label class="n" for="q" hidden>Search cars</label>
       <input id="q" name="q" type="search" placeholder="Search Make, Model or Keyword — e.g. Land Cruiser, Patrol, Lexus">
-      <button class="btn btn-primary" type="submit">Search cars</button>
+      <button class="btn btn-primary" type="submit"><span class="ms" aria-hidden="true" style="font-size:18px">search</span>Search cars</button>
     </form>
 
     <div class="quick" id="quick">
@@ -506,18 +515,11 @@ footer{background:var(--section); border-top:1px solid var(--line); padding-bloc
 
     <div class="paths">
       <a class="path" href="#buy">
-        <span class="path-ico" aria-hidden="true">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-            <path d="M3 13l2-5a2 2 0 012-1.4h10A2 2 0 0119 8l2 5v5a1 1 0 01-1 1h-2a1 1 0 01-1-1v-1H7v1a1 1 0 01-1 1H4a1 1 0 01-1-1z"/>
-            <circle cx="7.5" cy="14.5" r="1.2"/><circle cx="16.5" cy="14.5" r="1.2"/></svg>
-        </span>
+        <span class="path-ico" aria-hidden="true"><span class="ms">directions_car</span></span>
         <span><b>Looking to buy?</b><small>Browse 48+ inspected cars</small></span>
       </a>
       <a class="path" href="#sell">
-        <span class="path-ico" aria-hidden="true">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-            <path d="M3 12V5a2 2 0 012-2h7l9 9-9 9z"/><circle cx="7.5" cy="7.5" r="1.4"/></svg>
-        </span>
+        <span class="path-ico" aria-hidden="true"><span class="ms">sell</span></span>
         <span><b>Want to sell?</b><small>Instant valuation in 2 minutes</small></span>
       </a>
     </div>
@@ -567,17 +569,17 @@ footer{background:var(--section); border-top:1px solid var(--line); padding-bloc
         </p>
         <div class="steps">
           <div class="step">
-            <div class="step-n">STEP 01</div>
+            <div class="step-n"><span class="ms" aria-hidden="true" style="font-size:16px;margin-right:.375rem">speed</span>STEP 01</div>
             <h3>Instant free estimate</h3>
             <p>Enter your make, model, year and mileage. Receive a data-backed estimate based on recent Qatar transactions.</p>
           </div>
           <div class="step">
-            <div class="step-n">STEP 02</div>
+            <div class="step-n"><span class="ms" aria-hidden="true" style="font-size:16px;margin-right:.375rem">fact_check</span>STEP 02</div>
             <h3>Doorstep inspection</h3>
             <p>A certified team comes to you anywhere in Doha, takes professional photos and verifies vehicle health.</p>
           </div>
           <div class="step">
-            <div class="step-n">STEP 03</div>
+            <div class="step-n"><span class="ms" aria-hidden="true" style="font-size:16px;margin-right:.375rem">account_balance_wallet</span>STEP 03</div>
             <h3>Payment &amp; Metrash2</h3>
             <p>Accept the highest verified bid, receive guaranteed bank payment and automated Metrash2 title transfer.</p>
           </div>
@@ -878,22 +880,22 @@ footer{background:var(--section); border-top:1px solid var(--line); padding-bloc
     </div>
     <div class="trust reveal">
       <div class="pillar">
-        <span class="pill pill-grade">150-pt audited</span>
+        <span class="pill pill-grade"><span class="ms" aria-hidden="true" style="font-size:14px">fact_check</span>150-pt audited</span>
         <h3>Forensic inspection</h3>
         <p>Every lot passes a licensed 150-point bay audit with paint gauging, OBD diagnostics and odometer corroboration.</p>
       </div>
       <div class="pillar">
-        <span class="pill pill-grade">Verified bidders</span>
+        <span class="pill pill-grade"><span class="ms" aria-hidden="true" style="font-size:14px">shield_person</span>Verified bidders</span>
         <h3>Identity assurance</h3>
         <p>Bidding requires a Qatari ID or commercial registration. Anonymous accounts never reach the floor.</p>
       </div>
       <div class="pillar">
-        <span class="pill pill-grade">Transparent bidding</span>
+        <span class="pill pill-grade"><span class="ms" aria-hidden="true" style="font-size:14px">analytics</span>Transparent bidding</span>
         <h3>Open audit trail</h3>
         <p>Reserve status and full bid history are published live. No shill bids, no hidden increments.</p>
       </div>
       <div class="pillar">
-        <span class="pill pill-grade">End-to-end escrow</span>
+        <span class="pill pill-grade"><span class="ms" aria-hidden="true" style="font-size:14px">lock</span>End-to-end escrow</span>
         <h3>Protected settlement</h3>
         <p>Funds clear a QNB-regulated escrow before release, with Metrash2 title transfer filed on handover.</p>
       </div>
@@ -986,6 +988,18 @@ footer{background:var(--section); border-top:1px solid var(--line); padding-bloc
 
 <script>
 document.documentElement.classList.add('js');
+
+/* Material Symbols renders by ligature, so an unloaded face shows the raw
+   glyph name. Reveal the icons only once the font is genuinely ready; if it
+   never loads they stay hidden rather than printing "directions_car". */
+(function(){
+  var show = function(){ document.documentElement.classList.add('icons-ready'); };
+  if (document.fonts && document.fonts.load){
+    document.fonts.load('20px "Material Symbols Outlined"', 'search')
+      .then(function(faces){ if (faces && faces.length) show(); })
+      .catch(function(){});
+  }
+})();
 
 /* ── Photography from the Stitch project ──────────────────────────────── */
 var IMG = {
@@ -1086,7 +1100,7 @@ function lotCard(l){
     + '</div>'
     + '<div class="lot-cta">'
     +   (live
-      ? '<button class="btn btn-primary" type="button">Quick bid</button>'
+      ? '<button class="btn btn-primary" type="button"><span class="ms" aria-hidden="true" style="font-size:18px">gavel</span>Quick bid</button>'
         + '<button class="btn btn-secondary" type="button">Dossier</button>'
       : '<button class="btn btn-secondary btn-full" type="button">View car</button>')
     + '</div></article>';
