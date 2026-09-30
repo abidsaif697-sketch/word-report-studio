@@ -1,0 +1,825 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Qatar Automotive Exchange</title>
+<meta name="description" content="Sealed-reserve digital auction exchange for GCC-specification vehicles, settled in Doha.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;600&display=swap">
+<style>
+/* ── Layout concept ───────────────────────────────────────────────────────────
+   A trading terminal stacked behind a concourse. Depth comes from tonal
+   layering and parallax planes, never from drop shadows: the skyline recedes,
+   the lot data advances, the rules stay hairline. 1440px cap, 12-col desktop.
+   ─────────────────────────────────────────────────────────────────────────── */
+:root{
+  /* Color — Qatar Maroon on forensic white */
+  --maroon:#721121; --maroon-hover:#540D18; --maroon-press:#3C0811; --maroon-tint:#F6EBED;
+  --obsidian:#111827; --charcoal:#4B5563; --grey:#9CA3AF;
+  --platinum:#F3F4F6; --canvas:#FFFFFF; --line:#E5E7EB;
+  --crimson:#EF4444; --verdant:#15803D; --amber:#B45309;
+  --sky-hi:#E8EDF6; --sky-lo:#F7F8FB;
+  --tower-far:#D6DCE7; --tower-mid:#B9C2D2; --tower-near:#8F9BAF; --ground:#E3E1DC;
+  /* Object colours — a tyre is dark in either theme, so these never invert */
+  --tyre:#15181E; --tyre-hub:#6B7280; --shade:#0B0E13;
+
+  /* Type */
+  --display:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --arabic:"IBM Plex Sans Arabic","Plus Jakarta Sans",system-ui,sans-serif;
+  --num:"Plus Jakarta Sans",ui-monospace,sans-serif;
+
+  /* Space */
+  --margin:3rem; --gutter:1.5rem; --cap:1440px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+  --maroon:#E0868F; --maroon-hover:#EFA3AA; --maroon-press:#C96B76; --maroon-tint:#2A1216;
+  --obsidian:#EDF0F6; --charcoal:#A8B1C2; --grey:#6B7487;
+  --platinum:#161B24; --canvas:#0C1016; --line:#252C38;
+  --crimson:#FF6B6B; --verdant:#4ADE80; --amber:#FBBF24;
+  --sky-hi:#0F141C; --sky-lo:#0C1016;
+  --tower-far:#161C26; --tower-mid:#1E2633; --tower-near:#2A3442; --ground:#141920;
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --maroon:#E0868F; --maroon-hover:#EFA3AA; --maroon-press:#C96B76; --maroon-tint:#2A1216;
+  --obsidian:#EDF0F6; --charcoal:#A8B1C2; --grey:#6B7487;
+  --platinum:#161B24; --canvas:#0C1016; --line:#252C38;
+  --crimson:#FF6B6B; --verdant:#4ADE80; --amber:#FBBF24;
+  --sky-hi:#0F141C; --sky-lo:#0C1016;
+  --tower-far:#161C26; --tower-mid:#1E2633; --tower-near:#2A3442; --ground:#141920;
+  color-scheme:dark;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--canvas); color:var(--obsidian);
+  font-family:var(--display); font-size:1rem; line-height:1.5;
+  -webkit-font-smoothing:antialiased; overflow-x:hidden;
+}
+img{max-width:100%}
+h1,h2,h3{margin:0; text-wrap:balance; letter-spacing:-0.025em}
+p{margin:0}
+a{color:inherit}
+.num{font-variant-numeric:tabular-nums lining-nums; font-feature-settings:"tnum" 1,"lnum" 1; font-family:var(--num)}
+.wrap{max-width:var(--cap); margin-inline:auto; padding-inline:var(--margin)}
+@media (max-width:1279px){ :root{--margin:1.5rem} }
+@media (max-width:767px){ :root{--margin:1rem; --gutter:0.75rem} }
+
+.eyebrow{
+  font-size:0.75rem; font-weight:600; line-height:1; letter-spacing:0.06em;
+  text-transform:uppercase; color:var(--charcoal);
+}
+.rule{height:1px; background:var(--line); border:0; margin:0}
+
+/* ── Header ──────────────────────────────────────────────────────────────── */
+.masthead{
+  position:sticky; top:env(safe-area-inset-top,0px); z-index:60;
+  background:color-mix(in srgb,var(--canvas) 88%,transparent);
+  backdrop-filter:saturate(180%) blur(12px);
+  border-bottom:1px solid var(--line);
+}
+.masthead-in{display:flex; align-items:center; gap:1.5rem; height:60px}
+.mark{display:flex; align-items:center; gap:.625rem; margin-right:auto; text-decoration:none}
+.mark-glyph{
+  width:26px; height:26px; flex:none; border-radius:2px; background:var(--maroon);
+  display:grid; place-items:center; color:#fff; font-weight:800; font-size:.8125rem; letter-spacing:-.04em;
+}
+:root[data-theme="dark"] .mark-glyph,
+:root:not([data-theme="light"]) .mark-glyph{color:#12060A}
+@media (prefers-color-scheme:light){ :root:not([data-theme="dark"]) .mark-glyph{color:#fff} }
+.mark-name{font-weight:700; font-size:.9375rem; letter-spacing:-.02em}
+.mark-sub{font-size:.6875rem; font-weight:500; letter-spacing:.04em; color:var(--grey); text-transform:uppercase}
+.nav{display:flex; gap:1.5rem}
+.nav a{font-size:.875rem; font-weight:500; color:var(--charcoal); text-decoration:none}
+.nav a:hover{color:var(--maroon)}
+@media (max-width:900px){ .nav{display:none} }
+@media (max-width:639px){
+  .masthead-in{height:56px; gap:.75rem}
+  .mark-sub{display:none}
+  .mark-name{font-size:.8125rem; line-height:1.2; display:block; max-width:15ch}
+  .masthead .btn{padding:.5rem .75rem; font-size:.8125rem; white-space:nowrap}
+}
+
+.btn{
+  font-family:inherit; font-size:.875rem; font-weight:600; letter-spacing:-.01em;
+  padding:.5625rem 1.125rem; border-radius:4px; border:1px solid transparent;
+  cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:.5rem;
+  transition:background-color .15s ease,border-color .15s ease,color .15s ease;
+}
+.btn-primary{background:var(--maroon); color:var(--canvas); border-color:var(--maroon)}
+.btn-primary:hover{background:var(--maroon-hover); border-color:var(--maroon-hover)}
+.btn-primary:active{background:var(--maroon-press)}
+.btn-ghost{background:transparent; color:var(--obsidian); border-color:var(--line)}
+.btn-ghost:hover{border-color:var(--charcoal)}
+.btn-lg{padding:.8125rem 1.5rem; font-size:.9375rem}
+:focus-visible{outline:2px solid var(--maroon); outline-offset:2px; border-radius:2px}
+
+/* Live ticker */
+.ticker{border-bottom:1px solid var(--line); background:var(--platinum); overflow:hidden}
+.ticker-in{display:flex; align-items:center; gap:1rem; height:34px; font-size:.75rem}
+.ticker-tag{
+  display:inline-flex; align-items:center; gap:.375rem; flex:none; z-index:1;
+  padding-right:1rem; background:var(--platinum);
+  font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--crimson);
+}
+.ticker-mask{flex:1; min-width:0; overflow:hidden}
+.pulse{width:6px; height:6px; border-radius:50%; background:var(--crimson); animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1; transform:scale(1)} 50%{opacity:.35; transform:scale(.8)}}
+.ticker-rail{display:flex; gap:2rem; white-space:nowrap; animation:slide 46s linear infinite; min-width:0}
+.ticker-rail:hover{animation-play-state:paused}
+@keyframes slide{from{transform:translate3d(0,0,0)} to{transform:translate3d(-50%,0,0)}}
+.ticker-item{color:var(--charcoal)}
+.ticker-item b{color:var(--obsidian); font-weight:700}
+.up{color:var(--verdant); font-weight:700}
+
+/* ── Hero / parallax stage ───────────────────────────────────────────────── */
+.stage{position:relative; isolation:isolate; overflow:hidden; border-bottom:1px solid var(--line)}
+.stage-sky{position:absolute; inset:0; background:linear-gradient(180deg,var(--sky-hi) 0%,var(--sky-lo) 70%); z-index:-5}
+.plane{position:absolute; left:0; right:0; bottom:0; width:100%; will-change:transform; pointer-events:none}
+.plane svg{display:block; width:100%; height:auto}
+.p-far{z-index:-4; opacity:.9}
+.p-mid{z-index:-3}
+.p-near{z-index:-2}
+.p-ground{z-index:-1}
+.stage-in{position:relative; z-index:1; padding-block:5rem 9.5rem}
+@media (max-width:767px){ .stage-in{padding-block:2.5rem 6rem} }
+
+.hero-grid{display:grid; grid-template-columns:7fr 5fr; gap:var(--gutter) 4rem; align-items:start}
+@media (max-width:1023px){ .hero-grid{grid-template-columns:1fr; gap:2.5rem} }
+.hero-copy{min-width:0}
+h1.hero-h{
+  font-size:clamp(2rem,4.6vw,3.25rem); font-weight:800; line-height:1.08;
+  letter-spacing:-.035em; margin-block:1.25rem .875rem; max-width:15ch;
+}
+.hero-h em{font-style:normal; color:var(--maroon)}
+.hero-ar{
+  font-family:var(--arabic); font-size:1.125rem; font-weight:400; color:var(--charcoal);
+  direction:rtl; max-width:28ch; margin-bottom:1rem;
+}
+.hero-lede{font-size:1.125rem; line-height:1.65; color:var(--charcoal); max-width:46ch}
+.hero-cta{display:flex; flex-wrap:wrap; gap:.75rem; margin-top:1.75rem}
+.hero-meta{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(92px,max-content));
+  gap:1rem 2.5rem; margin-top:2.5rem; padding-top:1.5rem; border-top:1px solid var(--line);
+}
+.hero-meta div{min-width:0}
+.hero-meta dt{font-size:.6875rem; font-weight:500; letter-spacing:.04em; text-transform:uppercase; color:var(--grey)}
+.hero-meta dd{margin:.25rem 0 0; font-size:1.25rem; font-weight:700; letter-spacing:-.01em}
+
+/* Lot console */
+.console{
+  background:var(--canvas); border:1px solid var(--line); border-radius:6px;
+  overflow:hidden; will-change:transform;
+}
+.console-hd{display:flex; align-items:center; gap:.625rem; padding:.75rem 1rem; border-bottom:1px solid var(--line); background:var(--platinum)}
+.lot-id{font-size:.6875rem; font-weight:600; letter-spacing:.06em; color:var(--charcoal)}
+.chip{
+  margin-left:auto; display:inline-flex; align-items:center; gap:.375rem;
+  font-size:.6875rem; font-weight:600; letter-spacing:.04em; text-transform:uppercase;
+  padding:.25rem .5rem; border-radius:3px; background:var(--crimson); color:#fff;
+}
+:root[data-theme="dark"] .chip, :root:not([data-theme="light"]) .chip{color:#1A0505}
+@media (prefers-color-scheme:light){ :root:not([data-theme="dark"]) .chip{color:#fff} }
+.console-bd{padding:1.125rem 1rem 1rem}
+.console-title{font-size:1.125rem; font-weight:700; letter-spacing:-.02em}
+.console-spec{font-size:.8125rem; color:var(--grey); margin-top:.25rem}
+.bid-row{display:flex; align-items:flex-end; justify-content:space-between; gap:1rem; margin-top:1.125rem}
+.bid-label{font-size:.6875rem; font-weight:500; letter-spacing:.04em; text-transform:uppercase; color:var(--grey)}
+.bid-val{font-size:2rem; font-weight:700; line-height:1.1; letter-spacing:-.025em; margin-top:.25rem}
+.bid-cur{font-size:.875rem; font-weight:600; color:var(--charcoal); margin-right:.25rem}
+.clock{text-align:right}
+.clock-val{font-size:1.25rem; font-weight:700; letter-spacing:-.01em; margin-top:.25rem; color:var(--crimson)}
+.console-grid{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--line); border:1px solid var(--line); border-radius:4px; overflow:hidden; margin-top:1.125rem}
+.cell{background:var(--canvas); padding:.625rem .75rem}
+.cell dt{font-size:.6875rem; font-weight:500; letter-spacing:.04em; text-transform:uppercase; color:var(--grey)}
+.cell dd{margin:.1875rem 0 0; font-size:.9375rem; font-weight:600}
+.console-ft{display:flex; gap:.625rem; padding:0 1rem 1.125rem}
+.console-ft .btn{flex:1; justify-content:center}
+.bidlog{border-top:1px solid var(--line); padding:.75rem 1rem 1rem; background:var(--platinum)}
+.bidlog-row{display:flex; justify-content:space-between; font-size:.8125rem; padding:.3125rem 0; color:var(--charcoal)}
+.bidlog-row b{color:var(--obsidian); font-weight:600}
+
+/* ── Sections ────────────────────────────────────────────────────────────── */
+section{padding-block:5rem}
+@media (max-width:767px){ section{padding-block:3.25rem} }
+.sec-hd{max-width:58ch; margin-bottom:2.5rem}
+h2.sec-h{font-size:clamp(1.625rem,3.4vw,2.25rem); font-weight:700; line-height:1.15; margin-block:.75rem .625rem}
+.sec-lede{font-size:1.0625rem; line-height:1.6; color:var(--charcoal)}
+
+.lots{display:grid; grid-template-columns:repeat(3,1fr); gap:var(--gutter)}
+@media (max-width:1023px){ .lots{grid-template-columns:repeat(2,1fr)} }
+@media (max-width:639px){ .lots{grid-template-columns:1fr} }
+.lot{border:1px solid var(--line); border-radius:6px; overflow:hidden; background:var(--canvas); display:flex; flex-direction:column}
+.lot-fig{position:relative; aspect-ratio:16/10; overflow:hidden; background:var(--platinum); border-bottom:1px solid var(--line)}
+.lot-fig svg{position:absolute; inset:0; width:100%; height:100%}
+.lot-grade{
+  position:absolute; top:.625rem; left:.625rem; z-index:2;
+  font-size:.6875rem; font-weight:700; letter-spacing:.04em;
+  padding:.25rem .4375rem; border-radius:3px; background:var(--canvas); border:1px solid var(--line);
+}
+.lot-bd{padding:.875rem 1rem 1rem; display:flex; flex-direction:column; flex:1; min-width:0}
+.lot-name{font-size:1rem; font-weight:700; letter-spacing:-.015em}
+.lot-spec{font-size:.8125rem; color:var(--grey); margin-top:.1875rem}
+.lot-foot{display:flex; align-items:flex-end; justify-content:space-between; gap:.75rem; margin-top:auto; padding-top:.875rem}
+.lot-bid{font-size:1.25rem; font-weight:700; letter-spacing:-.02em}
+.lot-time{font-size:.8125rem; font-weight:600; color:var(--charcoal)}
+.lot-time.urgent{color:var(--crimson)}
+
+/* Inspection band — parallax */
+.band{position:relative; overflow:hidden; border-block:1px solid var(--line); background:var(--platinum)}
+.band-art{position:absolute; inset:0; z-index:0; will-change:transform; pointer-events:none; opacity:.5}
+.band-art svg{width:100%; height:100%}
+.band-in{position:relative; z-index:1}
+.insp{display:grid; grid-template-columns:5fr 7fr; gap:3rem; align-items:center}
+@media (max-width:1023px){ .insp{grid-template-columns:1fr; gap:2rem} }
+.score{display:flex; align-items:center; gap:1.25rem; padding:1.25rem; background:var(--canvas); border:1px solid var(--line); border-radius:6px}
+.dial{width:96px; height:96px; flex:none}
+.score-val{font-size:2.5rem; font-weight:800; line-height:1; letter-spacing:-.03em}
+.score-of{font-size:1rem; font-weight:600; color:var(--grey)}
+.score-lab{font-size:.6875rem; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--charcoal); margin-top:.375rem}
+.checks{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--line); border:1px solid var(--line); border-radius:6px; overflow:hidden}
+@media (max-width:639px){ .checks{grid-template-columns:1fr} }
+.check{background:var(--canvas); padding:.875rem 1rem}
+.check-hd{display:flex; align-items:center; justify-content:space-between; gap:.75rem}
+.check-name{font-size:.875rem; font-weight:600}
+.check-state{font-size:.6875rem; font-weight:700; letter-spacing:.04em; text-transform:uppercase}
+.s-pass{color:var(--verdant)} .s-note{color:var(--amber)} .s-fail{color:var(--crimson)}
+.meter{height:3px; border-radius:2px; background:var(--line); margin-top:.625rem; overflow:hidden}
+.meter i{display:block; height:100%; border-radius:2px}
+.check-note{font-size:.75rem; color:var(--grey); margin-top:.5rem}
+
+/* Process */
+.steps{display:grid; grid-template-columns:repeat(4,1fr); gap:var(--gutter)}
+@media (max-width:1023px){ .steps{grid-template-columns:1fr 1fr} }
+@media (max-width:559px){ .steps{grid-template-columns:1fr} }
+.step{padding-top:1.125rem; border-top:2px solid var(--maroon)}
+.step-n{font-size:.6875rem; font-weight:700; letter-spacing:.06em; color:var(--maroon)}
+.step h3{font-size:1.0625rem; font-weight:700; margin-block:.5rem .375rem}
+.step p{font-size:.875rem; line-height:1.55; color:var(--charcoal)}
+
+/* Stats */
+.stats{display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:6px; overflow:hidden}
+@media (max-width:767px){ .stats{grid-template-columns:1fr 1fr} }
+.stat{background:var(--canvas); padding:1.5rem 1.25rem}
+.stat-v{font-size:2rem; font-weight:800; letter-spacing:-.03em; line-height:1.1}
+.stat-l{font-size:.6875rem; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--charcoal); margin-top:.5rem}
+.stat-n{font-size:.75rem; color:var(--grey); margin-top:.25rem}
+
+/* CTA */
+.closing{position:relative; overflow:hidden; background:var(--maroon); color:#fff; border-radius:8px; padding:3.5rem var(--margin)}
+:root[data-theme="dark"] .closing, :root:not([data-theme="light"]) .closing{background:#4A0A16; color:#FFE8EA}
+@media (prefers-color-scheme:light){ :root:not([data-theme="dark"]) .closing{background:var(--maroon); color:#fff} }
+.closing-art{position:absolute; inset:0; opacity:.14; will-change:transform; pointer-events:none}
+.closing-in{position:relative; z-index:1; max-width:46ch}
+.closing h2{font-size:clamp(1.5rem,3vw,2rem); font-weight:700; line-height:1.2}
+.closing p{margin-top:.75rem; font-size:1.0625rem; line-height:1.6; opacity:.9}
+.closing .btn{margin-top:1.75rem; background:#fff; color:#721121; border-color:#fff}
+.closing .btn:hover{background:#FFE8EA; border-color:#FFE8EA}
+
+/* Footer */
+footer{border-top:1px solid var(--line); padding-block:2.5rem; margin-top:5rem}
+.foot{display:flex; flex-wrap:wrap; gap:1rem 2rem; align-items:center}
+.foot p{font-size:.8125rem; color:var(--grey)}
+.foot-ar{font-family:var(--arabic); direction:rtl}
+.foot-links{display:flex; gap:1.25rem; margin-left:auto}
+.foot-links a{font-size:.8125rem; color:var(--charcoal); text-decoration:none}
+.foot-links a:hover{color:var(--maroon)}
+@media (max-width:639px){ .foot-links{margin-left:0} }
+
+/* Reveal — starts visible, animates only as an enhancement */
+.reveal{opacity:1; transform:none}
+@media (prefers-reduced-motion:no-preference){
+  .js .reveal{opacity:0; transform:translate3d(0,14px,0); transition:opacity .6s cubic-bezier(.2,.6,.2,1),transform .6s cubic-bezier(.2,.6,.2,1)}
+  .js .reveal.in{opacity:1; transform:none}
+}
+@media (prefers-reduced-motion:reduce){
+  .ticker-rail{animation:none} .pulse{animation:none}
+  .plane,.band-art,.closing-art,.console{transform:none!important}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ Ticker ══ -->
+<div class="ticker">
+  <div class="wrap ticker-in">
+    <span class="ticker-tag"><span class="pulse"></span>Live floor</span>
+    <div class="ticker-mask"><div class="ticker-rail" id="rail" aria-hidden="true"></div></div>
+  </div>
+</div>
+
+<!-- ══ Masthead ══ -->
+<header class="masthead">
+  <div class="wrap masthead-in">
+    <a class="mark" href="#top">
+      <span class="mark-glyph">Q</span>
+      <span>
+        <span class="mark-name">Qatar Automotive Exchange</span><br>
+        <span class="mark-sub">Doha · Lot settlement</span>
+      </span>
+    </a>
+    <nav class="nav">
+      <a href="#floor">Auction floor</a>
+      <a href="#inspection">Inspection</a>
+      <a href="#settlement">Settlement</a>
+    </nav>
+    <a class="btn btn-primary" href="#floor">Register to bid</a>
+  </div>
+</header>
+
+<!-- ══ Hero stage ══ -->
+<div class="stage" id="top">
+  <div class="stage-sky"></div>
+
+  <!-- far towers -->
+  <div class="plane p-far" data-speed="0.10">
+    <svg viewBox="0 0 1440 320" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+      <g fill="var(--tower-far)">
+        <rect x="40" y="150" width="54" height="170"/><rect x="118" y="196" width="40" height="124"/>
+        <polygon points="196,320 196,120 228,86 260,120 260,320"/>
+        <rect x="290" y="170" width="62" height="150"/><rect x="376" y="132" width="44" height="188"/>
+        <polygon points="452,320 468,104 500,104 516,320"/>
+        <rect x="546" y="178" width="70" height="142"/><rect x="640" y="146" width="38" height="174"/>
+        <polygon points="706,320 706,96 738,70 770,96 770,320"/>
+        <rect x="800" y="164" width="56" height="156"/><rect x="882" y="200" width="44" height="120"/>
+        <polygon points="952,320 968,118 1000,118 1016,320"/>
+        <rect x="1046" y="156" width="66" height="164"/><rect x="1136" y="188" width="40" height="132"/>
+        <polygon points="1206,320 1206,110 1238,84 1270,110 1270,320"/>
+        <rect x="1300" y="172" width="58" height="148"/><rect x="1382" y="204" width="42" height="116"/>
+      </g>
+    </svg>
+  </div>
+
+  <!-- mid towers -->
+  <div class="plane p-mid" data-speed="0.22">
+    <svg viewBox="0 0 1440 300" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+      <g fill="var(--tower-mid)">
+        <rect x="0" y="182" width="76" height="118"/>
+        <polygon points="110,300 110,128 146,96 182,128 182,300"/>
+        <rect x="214" y="164" width="88" height="136"/>
+        <polygon points="336,300 356,110 396,110 416,300"/>
+        <rect x="450" y="186" width="72" height="114"/>
+        <rect x="556" y="140" width="52" height="160"/>
+        <polygon points="642,300 642,88 682,56 722,88 722,300"/>
+        <rect x="756" y="172" width="90" height="128"/>
+        <polygon points="880,300 900,124 940,124 960,300"/>
+        <rect x="994" y="150" width="64" height="150"/>
+        <rect x="1092" y="190" width="80" height="110"/>
+        <polygon points="1206,300 1206,102 1246,70 1286,102 1286,300"/>
+        <rect x="1320" y="168" width="74" height="132"/>
+        <rect x="1412" y="196" width="28" height="104"/>
+      </g>
+    </svg>
+  </div>
+
+  <!-- near pavilion -->
+  <div class="plane p-near" data-speed="0.38">
+    <svg viewBox="0 0 1440 220" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+      <g fill="var(--tower-near)">
+        <rect x="-20" y="120" width="230" height="100"/>
+        <rect x="248" y="86" width="120" height="134"/>
+        <polygon points="404,220 404,58 448,30 492,58 492,220"/>
+        <rect x="530" y="112" width="180" height="108"/>
+        <rect x="748" y="72" width="98" height="148"/>
+        <polygon points="884,220 884,44 928,18 972,44 972,220"/>
+        <rect x="1010" y="104" width="162" height="116"/>
+        <rect x="1210" y="80" width="110" height="140"/>
+        <rect x="1356" y="126" width="104" height="94"/>
+      </g>
+    </svg>
+  </div>
+
+  <!-- ground plane -->
+  <div class="plane p-ground" data-speed="0.55">
+    <svg viewBox="0 0 1440 90" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+      <rect x="0" y="30" width="1440" height="60" fill="var(--ground)"/>
+      <g stroke="var(--line)" stroke-width="1" opacity=".7">
+        <line x1="0" y1="30" x2="1440" y2="30"/>
+        <line x1="0" y1="52" x2="1440" y2="52"/>
+        <line x1="0" y1="72" x2="1440" y2="72"/>
+      </g>
+    </svg>
+  </div>
+
+  <div class="wrap stage-in">
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <span class="eyebrow">Sealed reserve · GCC specification</span>
+        <h1 class="hero-h">Every lot arrives with its <em>evidence</em>.</h1>
+        <p class="hero-ar">كل مركبة تصل موثّقة بالكامل</p>
+        <p class="hero-lede">
+          A regulated exchange for high-value vehicles in Qatar. Bids clear against a sealed
+          reserve, every chassis carries a 214-point inspection file, and settlement lands
+          in escrow before the keys move.
+        </p>
+        <div class="hero-cta">
+          <a class="btn btn-primary btn-lg" href="#floor">Enter the floor</a>
+          <a class="btn btn-ghost btn-lg" href="#inspection">Read an inspection file</a>
+        </div>
+        <dl class="hero-meta">
+          <div><dt>Lots cleared</dt><dd class="num">8,412</dd></div>
+          <div><dt>Settlement median</dt><dd class="num">31 h</dd></div>
+          <div><dt>Reserve met</dt><dd class="num">87.4%</dd></div>
+        </dl>
+      </div>
+
+      <!-- Live lot console -->
+      <div class="console" id="console" data-speed="-0.06">
+        <div class="console-hd">
+          <span class="lot-id num">LOT QA-40118</span>
+          <span class="chip"><span class="pulse" style="background:currentColor"></span>Live</span>
+        </div>
+        <div class="console-bd">
+          <div class="console-title">2024 Toyota Land Cruiser 300 VXR</div>
+          <div class="console-spec num">Pearl white · 18,240 km · VIN ···7F4092</div>
+
+          <div class="bid-row">
+            <div>
+              <div class="bid-label">Current bid</div>
+              <div class="bid-val num"><span class="bid-cur">QAR</span><span id="bid">412,000</span></div>
+            </div>
+            <div class="clock">
+              <div class="bid-label">Time remaining</div>
+              <div class="clock-val num" id="clock">04:52</div>
+            </div>
+          </div>
+
+          <dl class="console-grid">
+            <div class="cell"><dt>Reserve</dt><dd class="s-pass">Met</dd></div>
+            <div class="cell"><dt>Increment</dt><dd class="num">QAR 2,000</dd></div>
+            <div class="cell"><dt>Inspection grade</dt><dd class="num">4.6 / 5</dd></div>
+            <div class="cell"><dt>Registered bidders</dt><dd class="num">34</dd></div>
+          </dl>
+        </div>
+        <div class="console-ft">
+          <button class="btn btn-primary" type="button" id="bidBtn">Place bid · QAR 414,000</button>
+          <button class="btn btn-ghost" type="button">Watch</button>
+        </div>
+        <div class="bidlog" id="bidlog">
+          <div class="bidlog-row"><span>Bidder <b class="num">#218</b></span><span class="num"><b>412,000</b> · 12s ago</span></div>
+          <div class="bidlog-row"><span>Bidder <b class="num">#091</b></span><span class="num">410,000 · 48s ago</span></div>
+          <div class="bidlog-row"><span>Bidder <b class="num">#218</b></span><span class="num">408,000 · 1m 22s ago</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ Auction floor ══ -->
+<section id="floor">
+  <div class="wrap">
+    <div class="sec-hd reveal">
+      <span class="eyebrow">Open lots · Closing today</span>
+      <h2 class="sec-h">The floor, in full view</h2>
+      <p class="sec-lede">
+        Reserve status, inspection grade and bid history are visible before you commit —
+        not after. Nothing about a lot is withheld to manufacture urgency.
+      </p>
+    </div>
+
+    <div class="lots" id="lots"></div>
+  </div>
+</section>
+
+<!-- ══ Inspection band ══ -->
+<div class="band" id="inspection">
+  <div class="band-art" data-speed="0.18" aria-hidden="true">
+    <svg viewBox="0 0 1440 400" preserveAspectRatio="xMidYMid slice">
+      <g stroke="var(--tower-near)" stroke-width="1" fill="none" opacity=".55">
+        <circle cx="240" cy="120" r="140"/><circle cx="240" cy="120" r="96"/><circle cx="240" cy="120" r="52"/>
+        <circle cx="1180" cy="300" r="170"/><circle cx="1180" cy="300" r="112"/>
+        <line x1="0" y1="200" x2="1440" y2="200"/>
+        <line x1="620" y1="0" x2="620" y2="400"/>
+        <rect x="700" y="90" width="220" height="220"/>
+      </g>
+    </svg>
+  </div>
+
+  <section class="wrap band-in">
+    <div class="sec-hd reveal">
+      <span class="eyebrow">214-point file · Independent bay</span>
+      <h2 class="sec-h">Forensic, not flattering</h2>
+      <p class="sec-lede">
+        Every vehicle is stripped to its record in a licensed Doha inspection bay. Paint depth is
+        gauged panel by panel, chassis geometry is measured, and faults are published whether or
+        not they help the sale.
+      </p>
+    </div>
+
+    <div class="insp reveal">
+      <div class="score">
+        <svg class="dial" viewBox="0 0 100 100" aria-hidden="true">
+          <circle cx="50" cy="50" r="42" fill="none" stroke="var(--line)" stroke-width="8"/>
+          <circle cx="50" cy="50" r="42" fill="none" stroke="var(--maroon)" stroke-width="8"
+                  stroke-linecap="butt" stroke-dasharray="243 264" transform="rotate(-90 50 50)"/>
+        </svg>
+        <div>
+          <div><span class="score-val num">4.6</span><span class="score-of num"> / 5.0</span></div>
+          <div class="score-lab">Composite grade</div>
+          <div class="check-note">Lot QA-40118 · Bay 3 · 27 Sep 2026</div>
+        </div>
+      </div>
+
+      <div class="checks">
+        <div class="check">
+          <div class="check-hd"><span class="check-name">Chassis geometry</span><span class="check-state s-pass">Pass</span></div>
+          <div class="meter"><i style="width:96%; background:var(--verdant)"></i></div>
+          <p class="check-note">No structural deviation. Factory weld seams intact.</p>
+        </div>
+        <div class="check">
+          <div class="check-hd"><span class="check-name">Paint depth</span><span class="check-state s-note">Noted</span></div>
+          <div class="meter"><i style="width:72%; background:var(--amber)"></i></div>
+          <p class="check-note num">Rear left door 184 µm vs. 121 µm baseline — refinished.</p>
+        </div>
+        <div class="check">
+          <div class="check-hd"><span class="check-name">Powertrain diagnostics</span><span class="check-state s-pass">Pass</span></div>
+          <div class="meter"><i style="width:94%; background:var(--verdant)"></i></div>
+          <p class="check-note">No stored fault codes. Compression within 4% across cylinders.</p>
+        </div>
+        <div class="check">
+          <div class="check-hd"><span class="check-name">Odometer verification</span><span class="check-state s-pass">Pass</span></div>
+          <div class="meter"><i style="width:100%; background:var(--verdant)"></i></div>
+          <p class="check-note num">18,240 km corroborated across 6 service records.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══ Settlement ══ -->
+<section id="settlement">
+  <div class="wrap">
+    <div class="sec-hd reveal">
+      <span class="eyebrow">Sequence · Hammer to handover</span>
+      <h2 class="sec-h">What happens after the hammer</h2>
+      <p class="sec-lede">
+        Four steps, in this order, every time. Median elapsed time from hammer to release is 31 hours.
+      </p>
+    </div>
+
+    <div class="steps reveal">
+      <div class="step">
+        <div class="step-n num">STEP 01</div>
+        <h3>Hammer &amp; lock</h3>
+        <p>Winning bid locks at close. The reserve is disclosed to both parties and the lot leaves the floor.</p>
+      </div>
+      <div class="step">
+        <div class="step-n num">STEP 02</div>
+        <h3>Escrow funding</h3>
+        <p>Buyer funds a QCB-regulated escrow account. Nothing moves until the balance clears.</p>
+      </div>
+      <div class="step">
+        <div class="step-n num">STEP 03</div>
+        <h3>Title transfer</h3>
+        <p>Ownership is filed with the Ministry of Interior traffic department and the plate is reassigned.</p>
+      </div>
+      <div class="step">
+        <div class="step-n num">STEP 04</div>
+        <h3>Release &amp; delivery</h3>
+        <p>Keys release from the Doha compound. Escrow pays the seller on confirmed handover.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ Stats ══ -->
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="stats reveal">
+      <div class="stat">
+        <div class="stat-v num">8,412</div>
+        <div class="stat-l">Lots cleared</div>
+        <div class="stat-n">Since Q1 2023</div>
+      </div>
+      <div class="stat">
+        <div class="stat-v num">QAR 3.1B</div>
+        <div class="stat-l">Settled value</div>
+        <div class="stat-n">Through escrow</div>
+      </div>
+      <div class="stat">
+        <div class="stat-v num">31 h</div>
+        <div class="stat-l">Median settlement</div>
+        <div class="stat-n">Hammer to release</div>
+      </div>
+      <div class="stat">
+        <div class="stat-v num">0.4%</div>
+        <div class="stat-l">Post-sale disputes</div>
+        <div class="stat-n">Trailing 12 months</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ Closing ══ -->
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="closing reveal">
+      <div class="closing-art" data-speed="0.12" aria-hidden="true">
+        <svg viewBox="0 0 1200 400" preserveAspectRatio="xMidYMid slice">
+          <g stroke="#fff" stroke-width="1" fill="none">
+            <circle cx="980" cy="200" r="180"/><circle cx="980" cy="200" r="120"/><circle cx="980" cy="200" r="60"/>
+            <line x1="0" y1="90" x2="1200" y2="90"/><line x1="0" y1="310" x2="1200" y2="310"/>
+          </g>
+        </svg>
+      </div>
+      <div class="closing-in">
+        <h2>Bidding opens to verified accounts only.</h2>
+        <p>Registration takes one business day and requires a Qatari ID or commercial registration. There is no listing fee for sellers.</p>
+        <a class="btn btn-lg" href="#floor">Request bidder access</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <p>Qatar Automotive Exchange · Lusail, Doha</p>
+    <p class="foot-ar">بورصة قطر للسيارات</p>
+    <div class="foot-links">
+      <a href="#inspection">Inspection standard</a>
+      <a href="#settlement">Settlement terms</a>
+      <a href="#top">Back to top</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+document.documentElement.classList.add('js');
+
+/* ── Lot data ─────────────────────────────────────────────────────────── */
+var LOTS = [
+  { id:'QA-40118', name:'Toyota Land Cruiser 300 VXR', spec:'2024 · Pearl white · 18,240 km',
+    grade:'4.6', bid:'412,000', secs:292, hue:'#E8E6E0', body:'suv' },
+  { id:'QA-40122', name:'Nissan Patrol Platinum V8',   spec:'2023 · Obsidian black · 34,910 km',
+    grade:'4.2', bid:'268,000', secs:1140, hue:'#2A2D33', body:'suv' },
+  { id:'QA-40131', name:'Lexus LX600 VIP Edition',     spec:'2023 · Sonic titanium · 22,105 km',
+    grade:'4.8', bid:'498,000', secs:3420, hue:'#B9BDC2', body:'suv' },
+  { id:'QA-40140', name:'Toyota Land Cruiser 300 GXR', spec:'2023 · Metallic grey · 41,880 km',
+    grade:'3.9', bid:'229,000', secs:6180, hue:'#7C828B', body:'suv' },
+  { id:'QA-40145', name:'Lexus LX600 F Sport',         spec:'2024 · Pearl white · 9,640 km',
+    grade:'4.9', bid:'545,000', secs:8940, hue:'#EDEBE6', body:'suv' },
+  { id:'QA-40151', name:'Nissan Patrol Nismo',         spec:'2023 · Metallic silver · 27,300 km',
+    grade:'4.4', bid:'312,000', secs:12600, hue:'#C6CAD0', body:'suv' }
+];
+
+function fmtTime(s){
+  if (s >= 3600){ var h=Math.floor(s/3600), m=Math.floor((s%3600)/60); return h+'h '+String(m).padStart(2,'0')+'m'; }
+  var m2=Math.floor(s/60), sec=s%60;
+  return String(m2).padStart(2,'0')+':'+String(sec).padStart(2,'0');
+}
+
+/* Body-on-frame SUV in profile — upright greenhouse and squared arches, the
+   proportions of a Land Cruiser 300 / Patrol rather than a generic saloon. */
+function lotArt(hue){
+  return '<svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid meet" aria-hidden="true">'
+    + '<rect width="320" height="200" fill="var(--platinum)"/>'
+    + '<rect x="0" y="146" width="320" height="54" fill="var(--ground)"/>'
+    + '<g opacity=".3" stroke="var(--tower-near)" stroke-width="1" fill="none">'
+    +   '<rect x="18" y="40" width="44" height="106"/>'
+    +   '<rect x="252" y="26" width="50" height="120"/>'
+    +   '<line x1="0" y1="146" x2="320" y2="146"/></g>'
+    + '<ellipse cx="160" cy="151" rx="108" ry="6" fill="var(--shade)" opacity=".16"/>'
+    + '<g stroke="var(--tower-near)" stroke-width="1.5" stroke-linejoin="round">'
+    /* roof → windscreen → bonnet → grille → sill → tailgate, one closed body */
+    +   '<path d="M62 146 L62 96 Q62 88 71 87 L92 85 L101 60 Q104 52 114 52 L214 52 Q224 52 227 60 L236 85 L254 89 Q264 92 264 102 L264 146 Z" fill="'+hue+'"/>'
+    /* glasshouse: front, middle, rear lights */
+    +   '<path d="M108 82 L115 61 Q116 58 121 58 L152 58 L152 82 Z" fill="var(--sky-hi)" stroke-width="1" opacity=".9"/>'
+    +   '<rect x="158" y="58" width="42" height="24" fill="var(--sky-hi)" stroke-width="1" opacity=".9"/>'
+    +   '<path d="M206 58 L214 58 Q219 58 220 61 L227 82 L206 82 Z" fill="var(--sky-hi)" stroke-width="1" opacity=".9"/>'
+    + '</g>'
+    /* lamps, arches, wheels */
+    + '<rect x="253" y="100" width="12" height="8" rx="2" fill="var(--sky-hi)" opacity=".95"/>'
+    + '<rect x="62" y="102" width="8" height="8" rx="2" fill="var(--crimson)" opacity=".7"/>'
+    + '<g>'
+    +   '<circle cx="104" cy="146" r="22" fill="var(--tyre)"/>'
+    +   '<circle cx="104" cy="146" r="9" fill="var(--tyre-hub)"/>'
+    +   '<circle cx="222" cy="146" r="22" fill="var(--tyre)"/>'
+    +   '<circle cx="222" cy="146" r="9" fill="var(--tyre-hub)"/>'
+    + '</g>'
+    + '</svg>';
+}
+
+var lotsEl = document.getElementById('lots');
+lotsEl.innerHTML = LOTS.map(function(l){
+  return '<article class="lot reveal">'
+    + '<div class="lot-fig">' + lotArt(l.hue)
+    +   '<span class="lot-grade num">GRADE ' + l.grade + '</span></div>'
+    + '<div class="lot-bd">'
+    +   '<div class="eyebrow num">LOT ' + l.id + '</div>'
+    +   '<div class="lot-name">' + l.name + '</div>'
+    +   '<div class="lot-spec num">' + l.spec + '</div>'
+    +   '<div class="lot-foot">'
+    +     '<div><div class="bid-label">Current bid</div>'
+    +       '<div class="lot-bid num"><span class="bid-cur">QAR</span>' + l.bid + '</div></div>'
+    +     '<div class="lot-time num' + (l.secs < 600 ? ' urgent' : '') + '" data-secs="' + l.secs + '">'
+    +       fmtTime(l.secs) + '</div>'
+    +   '</div>'
+    + '</div></article>';
+}).join('');
+
+/* ── Countdowns ───────────────────────────────────────────────────────── */
+var clockEl = document.getElementById('clock');
+var heroSecs = 292;
+var timeEls = [].slice.call(document.querySelectorAll('.lot-time'));
+
+setInterval(function(){
+  if (heroSecs > 0){ heroSecs--; clockEl.textContent = fmtTime(heroSecs); }
+  timeEls.forEach(function(el){
+    var s = parseInt(el.getAttribute('data-secs'), 10);
+    if (s > 0){ s--; el.setAttribute('data-secs', s); el.textContent = fmtTime(s);
+      if (s < 600) el.classList.add('urgent'); }
+  });
+}, 1000);
+
+/* ── Bid button ───────────────────────────────────────────────────────── */
+var bidEl = document.getElementById('bid');
+var bidBtn = document.getElementById('bidBtn');
+var bidlog = document.getElementById('bidlog');
+var current = 412000;
+
+bidBtn.addEventListener('click', function(){
+  current += 2000;
+  bidEl.textContent = current.toLocaleString('en-US');
+  bidBtn.textContent = 'Place bid · QAR ' + (current + 2000).toLocaleString('en-US');
+  var row = document.createElement('div');
+  row.className = 'bidlog-row';
+  row.innerHTML = '<span>You <b class="num">#402</b></span><span class="num"><b>'
+    + current.toLocaleString('en-US') + '</b> · just now</span>';
+  bidlog.insertBefore(row, bidlog.firstChild);
+  while (bidlog.children.length > 4) bidlog.removeChild(bidlog.lastChild);
+});
+
+/* ── Ticker ───────────────────────────────────────────────────────────── */
+var TICK = [
+  ['QA-40118','412,000','+2.4%'], ['QA-40122','268,000','+1.1%'], ['QA-40131','498,000','+3.8%'],
+  ['QA-40140','229,000','+0.6%'], ['QA-40145','545,000','+4.2%'], ['QA-40151','312,000','+1.9%']
+];
+var rail = document.getElementById('rail');
+var markup = TICK.map(function(t){
+  return '<span class="ticker-item num">' + t[0] + ' <b>QAR ' + t[1] + '</b> <span class="up">' + t[2] + '</span></span>';
+}).join('');
+rail.innerHTML = markup + markup;
+
+/* ── Parallax ─────────────────────────────────────────────────────────── */
+var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+var planes = [].slice.call(document.querySelectorAll('[data-speed]'));
+var ticking = false;
+
+/* Each plane measures its own resting position once, then only ever moves
+   relative to it — so nothing jumps out of place on first paint. */
+function measure(){
+  var y = window.pageYOffset;
+  planes.forEach(function(el){
+    var prev = el.style.transform;
+    el.style.transform = 'none';
+    var box = el.getBoundingClientRect();
+    el.base = box.top + y + box.height / 2;
+    el.rest = (y + window.innerHeight / 2) - el.base;  /* offset at first paint */
+    el.style.transform = prev;
+  });
+}
+
+function place(){
+  var vh = window.innerHeight, y = window.pageYOffset;
+  planes.forEach(function(el){
+    if (el.base == null) return;
+    var speed = parseFloat(el.getAttribute('data-speed'));
+    var rest = el.base - y;                      /* centre, untransformed */
+    if (rest < -400 || rest > vh + 400) return;  /* offscreen: skip */
+    var travelled = (y + vh / 2) - el.base - el.rest;  /* 0 at first paint */
+    el.style.transform = 'translate3d(0,' + (travelled * speed).toFixed(2) + 'px,0)';
+  });
+  ticking = false;
+}
+
+function onScroll(){
+  if (!ticking){ ticking = true; requestAnimationFrame(place); }
+}
+
+function remeasure(){ measure(); place(); }
+
+if (!reduce.matches){
+  remeasure();
+  window.addEventListener('scroll', onScroll, { passive:true });
+  window.addEventListener('resize', remeasure, { passive:true });
+  window.addEventListener('load', remeasure);
+}
+
+/* ── Reveal ───────────────────────────────────────────────────────────── */
+if (!reduce.matches && 'IntersectionObserver' in window){
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { rootMargin:'0px 0px -8% 0px', threshold:0.08 });
+  [].slice.call(document.querySelectorAll('.reveal')).forEach(function(el){ io.observe(el); });
+} else {
+  [].slice.call(document.querySelectorAll('.reveal')).forEach(function(el){ el.classList.add('in'); });
+}
+</script>
+</body>
+</html>
