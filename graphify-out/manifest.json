@@ -1,0 +1,350 @@
+{
+  ".claude/settings.json": {
+    "mtime": 1791171960.3198614,
+    "seen": 1791171975.0368998,
+    "ast_hash": "3b541b9935fcf0831355da956f897645",
+    "semantic_hash": ""
+  },
+  "clean_cache.py": {
+    "mtime": 1791011916.6090684,
+    "seen": 1791171975.0369027,
+    "ast_hash": "335f20f5b711407d56a5a4f8b1ea90c3",
+    "semantic_hash": ""
+  },
+  "word_report_studio/app/__init__.py": {
+    "mtime": 1791011916.6128488,
+    "seen": 1791171975.0369039,
+    "ast_hash": "29c4907d16bd12c7dbca2d5b9e1e5692",
+    "semantic_hash": ""
+  },
+  "word_report_studio/app/auto_enrich.py": {
+    "mtime": 1791011916.6129394,
+    "seen": 1791171975.036905,
+    "ast_hash": "3ee62b0099bfbffe3c61c30aab56cc57",
+    "semantic_hash": ""
+  },
+  "word_report_studio/app/branding.py": {
+    "mtime": 1791011916.6129394,
+    "seen": 1791171975.036906,
+    "ast_hash": "c42a7cfdd0e9afa8dbe2cccd9628f0c7",
+    "semantic_hash": ""
+  },
+  "word_report_studio/app/chart_engine.py": {
+    "mtime": 1791011916.6129394,
+    "seen": 1791171975.0369072,
+    "ast_hash": "1aa37fca5a85bd365c6ee13404d9e26b",
+    "semantic_hash": ""
+  },
+  "word_report_studio/app/content_parser.py": {
+    "mtime": 1791011916.6129394,
+    "seen": 1791171975.0369086,
+    "ast_hash": "fc24d031c4c2fca320e5949d9713e6d9",
+    "semantic_hash": ""
+  },
+  "word_report_studio/app/cover_art.py": {
+    "mtime": 1791011916.6129394,
+    "seen": 1791171975.0369172,
+    "ast_hash": "b9f18ba461ac9e2ceef3178f3107fb16",
+    "semantic_hash": ""
+  },
+  "word_report_studio/app/data_insights.py": {
+    "mtime": 1791011916.6129394,
+    "seen": 1791171975.036919,
+    "ast_hash": "31ec21cb4bfd2e59fcb12f63d865528f",
+    "semantic_hash": ""
+  },
+  "word_report_studio/app/design_principles.py": {
+    "mtime": 1791011916.6129394,
+    "seen": 1791171975.03692,
+    "ast_hash": "c8335455f49fb989c055b1882c27ebce",
+    "semantic_hash": ""
+  },
+  "word_report_studio/app/desktop_ui.py": {
+    "mtime": 1791011916.6130686,
+    "seen": 1791171975.036921,
+    "ast_hash": "20a7ec4f1be7090d2e0f87c6eab42920",
+    "semantic_hash": ""
+  },
+  "word_report_studio/app/docx_ingest.py": {
+    "mtime": 1791011916.6130686,
+    "seen": 1791171975.0369222,
+    "ast_hash": "7d6f112deb7ba4b49ffbcfb3af9d114e",
+    "semantic_hash": ""
+  },
+  "word_report_studio/app/docx_renderer.py": {
+    "mtime": 1791011916.6130686,
+    "seen": 1791171975.0369232,
+    "ast_hash": "0390ab2ca233443d5487af1f8f8f08e2",
+    "semantic_hash": ""
+  },
+  "word_report_studio/app/docx_xml_helpers.py": {
+    "mtime": 1791011916.6130686,
+    "seen": 1791171975.036924,
+    "ast_hash": "53fbf850183460d1b5c94c5306b1dc66",
+    "semantic_hash": ""
+  },
+  "word_report_studio/app/icon_library.py": {
+    "mtime": 1791011916.6130686,
+    "seen": 1791171975.0369246,
+    "ast_hash": "d67b6b369c76802d3fb3336c61a98cd2",
+    "semantic_hash": ""
+  },
+  "word_report_studio/app/image_filler.py": {
+    "mtime": 1791011916.6130686,
+    "seen": 1791171975.0369256,
+    "ast_hash": "39ebfb978782dc31e854642fe810641b",
+    "semantic_hash": ""
+  },
+  "word_report_studio/app/layout_engine.py": {
+    "mtime": 1791011916.6130686,
+    "seen": 1791171975.0369263,
+    "ast_hash": "3ccf175218360a3fcde6073db2f92fde",
+    "semantic_hash": ""
+  },
+  "word_report_studio/app/llm_brain.py": {
+    "mtime": 1791011916.6130686,
+    "seen": 1791171975.0369267,
+    "ast_hash": "9290d1b07f3de3e6b635c065f9f16918",
+    "semantic_hash": ""
+  },
+  "word_report_studio/app/offline_brain.py": {
+    "mtime": 1791011916.6130686,
+    "seen": 1791171975.0369275,
+    "ast_hash": "53a00be62999a8545af28410eb18c212",
+    "semantic_hash": ""
+  },
+  "word_report_studio/app/pdf_exporter.py": {
+    "mtime": 1791011916.6130686,
+    "seen": 1791171975.0369282,
+    "ast_hash": "941c2036bbf7c087145897d7be721f54",
+    "semantic_hash": ""
+  },
+  "word_report_studio/app/preview_gallery.py": {
+    "mtime": 1791011916.6130686,
+    "seen": 1791171975.0369291,
+    "ast_hash": "e91d410e0211e8aa2c97e40e287e47ca",
+    "semantic_hash": ""
+  },
+  "word_report_studio/app/structure_model.py": {
+    "mtime": 1791011916.6130686,
+    "seen": 1791171975.03693,
+    "ast_hash": "9ce8588ca3aa4c6023a00b53e6c2d3af",
+    "semantic_hash": ""
+  },
+  "word_report_studio/app/studio_ui.py": {
+    "mtime": 1791011916.6130686,
+    "seen": 1791171975.036931,
+    "ast_hash": "abb09b291a9b3d93ea239430587a7bf9",
+    "semantic_hash": ""
+  },
+  "word_report_studio/app/template_filler.py": {
+    "mtime": 1791011916.6130686,
+    "seen": 1791171975.0369318,
+    "ast_hash": "9d73879c15975ac655942842fde18638",
+    "semantic_hash": ""
+  },
+  "word_report_studio/app/template_manager.py": {
+    "mtime": 1791011916.6130686,
+    "seen": 1791171975.0369327,
+    "ast_hash": "2efa4c244aec88568d619d5bed866a41",
+    "semantic_hash": ""
+  },
+  "word_report_studio/app/vision_critic.py": {
+    "mtime": 1791011916.6130686,
+    "seen": 1791171975.0369334,
+    "ast_hash": "5e3b52978d10b2e7cca72c2bef9e4945",
+    "semantic_hash": ""
+  },
+  "word_report_studio/branding.json": {
+    "mtime": 1791011916.6130686,
+    "seen": 1791171975.0369344,
+    "ast_hash": "1cab590e852bb3eaffe5148c0b39d656",
+    "semantic_hash": ""
+  },
+  "word_report_studio/cleanup.py": {
+    "mtime": 1791011916.6130686,
+    "seen": 1791171975.036935,
+    "ast_hash": "fc1004b99cc0adc2a5d59b19ac0d7404",
+    "semantic_hash": ""
+  },
+  "word_report_studio/run_cli.py": {
+    "mtime": 1791011916.6130686,
+    "seen": 1791171975.036936,
+    "ast_hash": "d2eaf52b3589cd5231263699efb77585",
+    "semantic_hash": ""
+  },
+  "word_report_studio/run_gui.py": {
+    "mtime": 1791011916.6130686,
+    "seen": 1791171975.0369368,
+    "ast_hash": "5957d524665477471456fa64b8016f05",
+    "semantic_hash": ""
+  },
+  "word_report_studio/sample_input/schema_example.json": {
+    "mtime": 1791011916.6166334,
+    "seen": 1791171975.0369377,
+    "ast_hash": "35115fa3d0dcb85fa37b7a8da0030c6d",
+    "semantic_hash": ""
+  },
+  "word_report_studio/templates/academic_research/metadata.json": {
+    "mtime": 1791011916.6179872,
+    "seen": 1791171975.0369384,
+    "ast_hash": "ac17e307307bd26374c4cf8a32ab6af2",
+    "semantic_hash": ""
+  },
+  "word_report_studio/templates/annual_vibrant/metadata.json": {
+    "mtime": 1791011916.6179872,
+    "seen": 1791171975.0369396,
+    "ast_hash": "2d2777a9411e016c303cab3a8c97b7c5",
+    "semantic_hash": ""
+  },
+  "word_report_studio/templates/consulting_analytical/metadata.json": {
+    "mtime": 1791011916.6179872,
+    "seen": 1791171975.03694,
+    "ast_hash": "2c97e8b4430ac6d915549a96a7a76ed9",
+    "semantic_hash": ""
+  },
+  "word_report_studio/templates/corporate_modern/metadata.json": {
+    "mtime": 1791011916.6179872,
+    "seen": 1791171975.036941,
+    "ast_hash": "b34486a84359c38455e23761e72364fb",
+    "semantic_hash": ""
+  },
+  "word_report_studio/templates/executive_premium/metadata.json": {
+    "mtime": 1791011916.6179872,
+    "seen": 1791171975.0369415,
+    "ast_hash": "65d52d1320203792795268d6328a53fc",
+    "semantic_hash": ""
+  },
+  "word_report_studio/templates/government_formal/metadata.json": {
+    "mtime": 1791011916.6179872,
+    "seen": 1791171975.0369422,
+    "ast_hash": "461552c06863a571eb3c33582c7ae29f",
+    "semantic_hash": ""
+  },
+  "word_report_studio/templates/royal_formal/metadata.json": {
+    "mtime": 1791011916.6179872,
+    "seen": 1791171975.0369432,
+    "ast_hash": "f71839dd9adead8e332216c659459f0f",
+    "semantic_hash": ""
+  },
+  "word_report_studio/templates/strategy_premium/metadata.json": {
+    "mtime": 1791011916.6179872,
+    "seen": 1791171975.036944,
+    "ast_hash": "3adab5374c9e855d19f5fa4dcc138ac9",
+    "semantic_hash": ""
+  },
+  "word_report_studio/tests/run_golden_checks.py": {
+    "mtime": 1791011916.6179872,
+    "seen": 1791171975.0369446,
+    "ast_hash": "5b8c0b27534ecdb207fedfa9582c4403",
+    "semantic_hash": ""
+  },
+  "word_report_studio/tests/run_regression.py": {
+    "mtime": 1791011916.6189284,
+    "seen": 1791171975.036945,
+    "ast_hash": "c76cdd25aeb41cbc17f116be179bff57",
+    "semantic_hash": ""
+  },
+  ".claude/CLAUDE.md": {
+    "mtime": 1791171960.319495,
+    "seen": 1791171975.0369458,
+    "ast_hash": "9b31786b637be3c13978bec4c2330752",
+    "semantic_hash": ""
+  },
+  "CLAUDE.md": {
+    "mtime": 1791171960.3197,
+    "seen": 1791171975.0369468,
+    "ast_hash": "82efb97a359f5c7290bf2513d14686be",
+    "semantic_hash": ""
+  },
+  "word_report_studio/README.md": {
+    "mtime": 1791011916.6090684,
+    "seen": 1791171975.0369482,
+    "ast_hash": "03203a417ce640ca81e8eb3b3538d923",
+    "semantic_hash": ""
+  },
+  "word_report_studio/requirements.txt": {
+    "mtime": 1791011916.6130686,
+    "seen": 1791171975.036949,
+    "ast_hash": "5476eafe889ceaed010de94bdeae4be8",
+    "semantic_hash": ""
+  },
+  "word_report_studio/sample_input/company_rough.txt": {
+    "mtime": 1791011916.6130686,
+    "seen": 1791171975.0369499,
+    "ast_hash": "9919e57668313a85aef9504259566144",
+    "semantic_hash": ""
+  },
+  "word_report_studio/sample_input/design_showcase.md": {
+    "mtime": 1791011916.6166334,
+    "seen": 1791171975.0369506,
+    "ast_hash": "1fa54785d083bae7112f21c5a11de208",
+    "semantic_hash": ""
+  },
+  "word_report_studio/sample_input/messy_paste.txt": {
+    "mtime": 1791011916.6166334,
+    "seen": 1791171975.0369513,
+    "ast_hash": "13948ab31bfe4efc7cc487102ee56057",
+    "semantic_hash": ""
+  },
+  "word_report_studio/sample_input/raw_plain.txt": {
+    "mtime": 1791011916.6166334,
+    "seen": 1791171975.0369518,
+    "ast_hash": "049348cf81d3c7535e1fc0b499739147",
+    "semantic_hash": ""
+  },
+  "word_report_studio/sample_input/rough_prose.txt": {
+    "mtime": 1791011916.6166334,
+    "seen": 1791171975.0369525,
+    "ast_hash": "6178a224ef76b3bd5e943e8115d984f9",
+    "semantic_hash": ""
+  },
+  "word_report_studio/sample_input/sample_bilingual.md": {
+    "mtime": 1791011916.6166334,
+    "seen": 1791171975.0369534,
+    "ast_hash": "823d52ee760c471272b53f5efee77107",
+    "semantic_hash": ""
+  },
+  "word_report_studio/sample_input/stress_200p.md": {
+    "mtime": 1791011916.6166334,
+    "seen": 1791171975.036954,
+    "ast_hash": "224bbbc209e564f8829ebb043986815d",
+    "semantic_hash": ""
+  },
+  "word_report_studio/user_templates/README.txt": {
+    "mtime": 1791011916.9530685,
+    "seen": 1791171975.0369546,
+    "ast_hash": "25a1ff0b4d3c51882a71031402d62cad",
+    "semantic_hash": ""
+  },
+  "word_report_studio/sample_input/test_logo.png": {
+    "mtime": 1791011916.6166334,
+    "seen": 1791171975.0369554,
+    "ast_hash": "481863c7c7f8d3b1e5c59522cd8d6b7d",
+    "semantic_hash": ""
+  },
+  "word_report_studio/sample_input/test_photos/photo_1.png": {
+    "mtime": 1791011916.6166334,
+    "seen": 1791171975.036956,
+    "ast_hash": "0013e4d54da890166fc7844ff9568279",
+    "semantic_hash": ""
+  },
+  "word_report_studio/sample_input/test_photos/photo_2.png": {
+    "mtime": 1791011916.61791,
+    "seen": 1791171975.0369568,
+    "ast_hash": "19c22347e8038c6a356a72d98aabe3ba",
+    "semantic_hash": ""
+  },
+  "word_report_studio/sample_input/test_photos/photo_3.png": {
+    "mtime": 1791011916.61791,
+    "seen": 1791171975.0369575,
+    "ast_hash": "70c37c6729e54403be2c873978552081",
+    "semantic_hash": ""
+  },
+  "word_report_studio/sample_input/test_photos/photo_4.png": {
+    "mtime": 1791011916.61791,
+    "seen": 1791171975.0369585,
+    "ast_hash": "fb415d393717b93340a494b2c9581b23",
+    "semantic_hash": ""
+  }
+}
