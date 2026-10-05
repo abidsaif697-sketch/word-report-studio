@@ -16,4 +16,8 @@ pip install -q -r word_report_studio/requirements.txt --break-system-packages \
 if ! command -v graphify >/dev/null 2>&1; then
   uv tool install graphifyy || pipx install graphifyy
 fi
+# markitdown MCP server (registered in .mcp.json)
+if ! command -v markitdown-mcp >/dev/null 2>&1; then
+  uv tool install markitdown-mcp || pipx install markitdown-mcp
+fi
 echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$CLAUDE_ENV_FILE"
